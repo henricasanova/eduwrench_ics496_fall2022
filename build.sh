@@ -27,21 +27,21 @@ echo "======================================"
 printf "\n${NC}"
 
 # build simulators
-printf "${CYAN}"
-echo "[1/3] COMPILING SIMULATORS"
-printf "${NC}\n"
-
-for  dir in `ls simulators/`; do
-    echo "Building in simulator/$dir ..."
-    cd simulators/$dir
-    if [[ -f build.sh  ]]; then
-        ./build.sh $makedashjarg
-        if [[ $? -ne 0 ]]; then
-            exit 1
-        fi
-    fi
-    cd $TOPDIR
-done
+#printf "${CYAN}"
+#echo "[1/3] COMPILING SIMULATORS"
+#printf "${NC}\n"
+#
+#for  dir in `ls simulators/`; do
+#    echo "Building in simulator/$dir ..."
+#    cd simulators/$dir
+#    if [[ -f build.sh  ]]; then
+#        ./build.sh $makedashjarg
+#        if [[ $? -ne 0 ]]; then
+#            exit 1
+#        fi
+#    fi
+#    cd $TOPDIR
+#done
 
 printf "${CYAN}\n"
 echo "[2/3] BUILDING SERVER"
