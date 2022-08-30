@@ -17,7 +17,6 @@ import { StaticImage } from "gatsby-plugin-image"
 const IndexPage = () => (
   <Layout>
     <Seo title="Home" />
-
     <div className="irow" style={{ marginTop: "2em", marginBottom: "2em" }}>
       <div className="icolumn">
         <h3 style={{

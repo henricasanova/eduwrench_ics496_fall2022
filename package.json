@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "cytoscape": "^3.2.19",
+    "react-cytoscapejs": "^1.2.1"
+  }
+}
