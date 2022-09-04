@@ -9,6 +9,7 @@ const ModuleMap = () => {
         data: {
           id: '1',
           label: 'node1',
+          href: '/pedagogic_modules/single_core_computing/'
         },
         position: {
           x: 100,
@@ -19,6 +20,7 @@ const ModuleMap = () => {
         data: {
           id: '2',
           label: 'node2',
+          href: '/pedagogic_modules/single_core_computing/'
         },
         position: {
           x: 200,
@@ -46,8 +48,18 @@ const ModuleMap = () => {
             elements={CytoscapeComponent.normalizeElements(elements)}
             maxZoom={2}
             minZoom={0.3}
-            cy={(cy) => (cyRef.current = cy)}
+            cy={(cy) => {
+              cy.on('tap', 'node', function(){
+                try {
+                  window.open( this.data('href') );
+                } catch(e){
+                  window.location.href = this.data('href');
+                }
+				      });
+			      }}
+
             style={{ width: '400px', height: '400px' }}
+
         />
       </>
   );
