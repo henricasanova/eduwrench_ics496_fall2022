@@ -20,7 +20,7 @@ const ModuleMap = () => {
         data: {
           id: '2',
           label: 'A.3.1',
-          href: '/pedagogic_modules/single_core_computing/'
+          href: '/pedagogic_modules/networking_fundamentals/'
         },
         position: {
           x: 261.75,
@@ -31,10 +31,10 @@ const ModuleMap = () => {
         data: {
           id: '3',
           label: 'A.2',
-          href: '/pedagogic_modules/single_core_computing/'
+          href: '/pedagogic_modules/multi_core_computing/'
         },
         position: {
-          x: 543.5,
+          x: 825.25,
           y: 838
         },
       },
@@ -42,7 +42,7 @@ const ModuleMap = () => {
         data: {
           id: '4',
           label: 'A.3.2',
-          href: '/pedagogic_modules/single_core_computing/'
+          href: '/pedagogic_modules/client_server/'
         },
         position: {
           x: 261.75,
@@ -52,7 +52,7 @@ const ModuleMap = () => {
         data: {
           id: '5',
           label: 'A.3.3',
-          href: '/pedagogic_modules/single_core_computing/'
+          href: '/pedagogic_modules/coordinator_worker/'
         },
         position: {
           x: 543.5,
@@ -62,7 +62,7 @@ const ModuleMap = () => {
         data: {
           id: '6',
           label: 'A.3.4',
-          href: '/pedagogic_modules/single_core_computing/'
+          href: '/pedagogic_modules/workflows/'
         },
         position: {
           x: 825.25,
@@ -72,7 +72,7 @@ const ModuleMap = () => {
         data: {
           id: '7',
           label: 'C.1',
-          href: '/pedagogic_modules/single_core_computing/'
+          href: '/pedagogic_modules/batch_scheduling/'
         },
         position: {
           x: 1107,
@@ -83,7 +83,7 @@ const ModuleMap = () => {
         data: {
           id: '8',
           label: 'B.1',
-          href: '/pedagogic_modules/single_core_computing/'
+          href: '/pedagogic_modules/ci_service_concepts/'
         },
         position: {
           x: 261.75,
@@ -94,7 +94,7 @@ const ModuleMap = () => {
         data: {
           id: '9',
           label: 'C.2',
-          href: '/pedagogic_modules/single_core_computing/'
+          href: '/pedagogic_modules/cloud_functions/'
         },
         position: {
           x: 543.5,
@@ -105,7 +105,7 @@ const ModuleMap = () => {
         data: {
           id: '10',
           label: 'D.1',
-          href: '/pedagogic_modules/single_core_computing/'
+          href: '/pedagogic_modules/workflow_co2/'
         },
         position: {
           x: 1107,
@@ -209,6 +209,10 @@ const ModuleMap = () => {
             maxZoom={10}
             minZoom={0.3}
             autolock={true}
+            autoungrabify={true}
+            autounselectify={true}
+            boxSelectionEnabled={false}
+            zoomingEnabled={false}
             cy={(cy) => {
               cy.on('tap', 'node', function(){
                 try {
@@ -228,7 +232,9 @@ const ModuleMap = () => {
                   'text-wrap': 'wrap',
                   'text-halign': 'center',
                   'text-valign': 'center',
-                  'width': '50'
+                  'font-size': '50',
+                  'width': '120',
+                  'height': '100'
                 }
               },
               {
@@ -243,7 +249,7 @@ const ModuleMap = () => {
               },
             ]}
 
-            style={{ width: '1172px', height: '1716px' }}
+            style={{ width: '1172px', height: '2000px' }}
 
         />
   );
