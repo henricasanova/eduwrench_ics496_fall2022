@@ -121,18 +121,94 @@ const ModuleMap = () => {
           label: 'edge from node1 to node2',
         },
       },
+      {
+        data: {
+          source: '1',
+          target: '3',
+          label: 'edge from node1 to node2',
+        },
+      },
+      {
+        data: {
+          source: '2',
+          target: '4',
+          label: 'edge from node1 to node2',
+        },
+      },
+      {
+        data: {
+          source: '2',
+          target: '5',
+          label: 'edge from node1 to node2',
+        },
+      },
+      {
+        data: {
+          source: '2',
+          target: '6',
+          label: 'edge from node1 to node2',
+        },
+      },
+      {
+        data: {
+          source: '3',
+          target: '4',
+          label: 'edge from node1 to node2',
+        },
+      },
+      {
+        data: {
+          source: '3',
+          target: '5',
+          label: 'edge from node1 to node2',
+        },
+      },
+      {
+        data: {
+          source: '3',
+          target: '6',
+          label: 'edge from node1 to node2',
+        },
+      },
+      {
+        data: {
+          source: '3',
+          target: '7',
+          label: 'edge from node1 to node2',
+        },
+      },
+      {
+        data: {
+          source: '4',
+          target: '8',
+          label: 'edge from node1 to node2',
+        },
+      },
+      {
+        data: {
+          source: '4',
+          target: '9',
+          label: 'edge from node1 to node2',
+        },
+      },
+      {
+        data: {
+          source: '5',
+          target: '9',
+          label: 'edge from node1 to node2',
+        },
+      },
     ],
   };
 
   // const cyRef = useRef();
 
   return (
-      <>
-        <h1>Module Map Component</h1>
         <CytoscapeComponent
             elements={CytoscapeComponent.normalizeElements(elements)}
-            maxZoom={2}
+            maxZoom={10}
             minZoom={0.3}
+            autolock={true}
             cy={(cy) => {
               cy.on('tap', 'node', function(){
                 try {
@@ -142,11 +218,34 @@ const ModuleMap = () => {
                 }
 				      });
 			      }}
+            stylesheet={[
+              {
+                selector: 'node',
+                style: {
+                  'background-color': 'transparent',
+                  'color': 'blue',
+                  'label': 'data(label)',
+                  'text-wrap': 'wrap',
+                  'text-halign': 'center',
+                  'text-valign': 'center',
+                  'width': '50'
+                }
+              },
+              {
+                selector: 'edge',
+                style: {
+                  'width': 3,
+                  'curve-style': 'bezier',
+                  'line-color': '#333',
+                  'target-arrow-color': '#333',
+                  'target-arrow-shape': 'triangle'
+                }
+              },
+            ]}
 
             style={{ width: '1172px', height: '1716px' }}
 
         />
-      </>
   );
 };
 

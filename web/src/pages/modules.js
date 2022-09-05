@@ -17,9 +17,8 @@ const Modules = () => (
   <Layout>
     <Seo title="Modules" />
     <p>&nbsp;</p>
-    <ModulesList />
+    <ModuleMap/>
     <br/><br/>
-    <ModuleMap />
   </Layout>
 )
 
