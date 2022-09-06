@@ -1,6 +1,11 @@
 import React from "react"
 // import { useRef } from 'react';
 import CytoscapeComponent from 'react-cytoscapejs';
+import cytoscape from 'cytoscape';
+import popper from 'cytoscape-popper';
+import "./popper.css";
+
+cytoscape.use( popper );
 
 const ModuleMap = () => {
   const elements = {
@@ -10,14 +15,15 @@ const ModuleMap = () => {
           id: '1',
           label: 'A.1',
           href: '/pedagogic_modules/single_core_computing/',
-          text: 'data(id)'
+          text: 'data(id)',
+          description: 'data id'
         },
         position: {
           x: 543.5,
           y: 409
         },
         style: {
-          content: "data(id)"
+          description: "data(id)"
         },
       },
       {
@@ -205,7 +211,6 @@ const ModuleMap = () => {
     ],
   };
 
-
   return (
         <CytoscapeComponent
             elements={CytoscapeComponent.normalizeElements(elements)}
@@ -224,12 +229,33 @@ const ModuleMap = () => {
                   window.location.href = this.data('href');
                 }
 				      });
-              cy.on('tapstart mouseover', 'node', function(event){
+              cy.on('tapstart mouseover', 'node', function(){
                 console.log("This is for popup window when mouseover");
-                console.log( 'mouse on node ' + this.data('label') );
+                console.log( 'mouse on node ' + this.style('content') );
+              });
+              cy.elements().bind("mouseover", (event) => {
+                event.target.popperRefObj = event.target.popper({
+                  content: () => {
+                    let content = document.createElement("div");
+
+                    content.classList.add("popper-div");
+
+                    content.innerHTML = event.target.id();
+
+                    document.body.appendChild(content);
+                    return content;
+                  },
+                });
               });
               cy.on('tapend mouseout', 'node', function(){
                 console.log("This is for popup window when mouseout");
+              });
+              cy.elements().unbind("mouseout");
+              cy.elements().bind("mouseout", (event) => {
+                if (event.target.popper) {
+                  event.target.popperRefObj.state.elements.popper.remove();
+                  event.target.popperRefObj.destroy();
+                }
               });
 			      }}
             stylesheet={[
