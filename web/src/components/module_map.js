@@ -9,11 +9,15 @@ const ModuleMap = () => {
         data: {
           id: '1',
           label: 'A.1',
-          href: '/pedagogic_modules/single_core_computing/'
+          href: '/pedagogic_modules/single_core_computing/',
+          text: 'data(id)'
         },
         position: {
           x: 543.5,
           y: 409
+        },
+        style: {
+          content: "data(id)"
         },
       },
       {
@@ -201,7 +205,6 @@ const ModuleMap = () => {
     ],
   };
 
-  // const cyRef = useRef();
 
   return (
         <CytoscapeComponent
@@ -221,6 +224,13 @@ const ModuleMap = () => {
                   window.location.href = this.data('href');
                 }
 				      });
+              cy.on('tapstart mouseover', 'node', function(event){
+                console.log("This is for popup window when mouseover");
+                console.log( 'mouse on node ' + this.data('label') );
+              });
+              cy.on('tapend mouseout', 'node', function(){
+                console.log("This is for popup window when mouseout");
+              });
 			      }}
             stylesheet={[
               {
