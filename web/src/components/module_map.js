@@ -16,7 +16,7 @@ const ModuleMap = () => {
           label: 'A.1',
           href: '/pedagogic_modules/single_core_computing/',
           text: 'data(id)',
-          description: 'data id'
+          description: 'Some description'
         },
         position: {
           x: 543.5,
@@ -240,7 +240,12 @@ const ModuleMap = () => {
 
                     content.classList.add("popper-div");
 
-                    content.innerHTML = event.target.id();
+                    // content.innerHTML = event.target.id();
+                    // console.log("EVENT =");
+                    // console.log(event);
+                    // console.log("EVENT TARGET=");
+                    // console.log(event.target);
+                    content.innerHTML = event.target[0]._private.data.description
 
                     document.body.appendChild(content);
                     return content;
