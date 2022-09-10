@@ -16,7 +16,11 @@ const GetCurriculumMapDatabase = () => {
             ModuleTitles {
                 number
                 title
+                description
+                href
+                position
             }
+           
             SLOs {
                 description
                 key
@@ -28,6 +32,12 @@ const GetCurriculumMapDatabase = () => {
                 tabname
                 SLOs
           }
+            ModuleEdges {
+                data {
+                  source
+                  target  
+                }
+            }
         }
       }
     }
@@ -68,13 +78,13 @@ export const ListSLOs = (module, tab) => {
 export const HighLevelCurriculumMap = () => {
 
   const data = GetCurriculumMapDatabase()
-
   // Get the SLOs and Mappings
   const TopSLOs = data["allCurriculummapYaml"]["nodes"][0]["TopSLOs"]
   const ModuleTitles = data["allCurriculummapYaml"]["nodes"][1]["ModuleTitles"]
   const SLOs = data["allCurriculummapYaml"]["nodes"][2]["SLOs"]
   const Mappings = data["allCurriculummapYaml"]["nodes"][3]["Mappings"]
-
+  const ModuleEdges = data["allCurriculummapYaml"]["nodes"][4]["ModuleEdges"]
+  console.log(ModuleEdges)
   // Compute the dict of all modules: module_dict[module] = [[tab, bool, bool, bool, bool], [tab, bool, bool, bool], ...]
   let module_dict = {}
 
