@@ -587,6 +587,18 @@
         - "slo_workflow_distributed_performance"
         - "slo_workflow_distributed_data_locality"
         - "slo_optimizing_performance_and_energy"
+#- ModuleEdges:
+#      - data: { source: "A.1", target: "A.3.1" }
+#      - data: { source: "A.1", target: "A.2" }
+#      - data: { source: "A.3.1", target: "A.3.2" }
+#      - data: { source: "A.2", target: "A.3.2" }
+#      - data: { source: "A.3.1", target: "A.3.3" }
+#      - data: { source: "A.3.1", target: "A.3.4" }
+#      - data: { source: "A.1", target: "A.2" }
+#      - data: { source: "A.1", target: "A.2" }
+#      - data: { source: "A.1", target: "A.2" }
+#      - data: { source: "A.1", target: "A.2" }
+#      - data: { source: "A.1", target: "A.2" }
+#      - data: { source: "A.1", target: "A.2" }
 
-- ModuleEdges:
-      - data: { source: "A.1", target: "A.2" }
+

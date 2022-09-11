@@ -4,10 +4,13 @@ import CytoscapeComponent from 'react-cytoscapejs';
 import cytoscape from 'cytoscape';
 import popper from 'cytoscape-popper';
 import "./popper.css";
+import { ModuleCytoscapeGraph } from './curriculum_map';
 
 cytoscape.use( popper );
 
 const ModuleMap = () => {
+  const temp = ModuleCytoscapeGraph()
+  console.log(temp, 'in module map')
   const elements = {
     nodes: [
       {
