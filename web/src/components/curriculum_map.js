@@ -32,6 +32,10 @@ const GetCurriculumMapDatabase = () => {
                 tabname
                 SLOs
           }
+            ModuleEdges {
+                source
+                target
+            }
         }
       }
     }
@@ -74,19 +78,35 @@ export const ModuleCytoscapeGraph = () => {
   const data = GetCurriculumMapDatabase()
 
   const ModuleTitles = data["allCurriculummapYaml"]["nodes"][1]["ModuleTitles"]
-  const temp = ModuleTitles.map((module) => {
+  const ModuleEdges = data["allCurriculummapYaml"]["nodes"][4]["ModuleEdges"]
+  const temp1 = ModuleTitles.map((module) => {
     return {
-      id: module.number,
-      label: module.number,
-      href: module.href,
-      description: module.description,
+      data: {
+        id: module.number,
+        label: module.number,
+        href: module.href,
+        description: module.description,
+      },
       position: {
         x: module.position[0],
         y: module.position[1]
       }
     }
   })
-  return temp
+
+  const temp2 = ModuleEdges.map((edges) => {
+    return {
+      data: {
+        source: edges.source,
+        target: edges.target
+      }
+    }
+  })
+  const elements = {
+    nodes: temp1,
+    edges: temp2
+  }
+  return elements
 }
 
 export const HighLevelCurriculumMap = () => {

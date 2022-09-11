@@ -11,6 +11,7 @@ cytoscape.use( popper );
 const ModuleMap = () => {
   const temp = ModuleCytoscapeGraph()
   console.log(temp, 'in module map')
+  console.log(elements)
   const elements = {
     nodes: [
       {
@@ -24,9 +25,6 @@ const ModuleMap = () => {
         position: {
           x: 543.5,
           y: 409
-        },
-        style: {
-          description: "data(id)"
         },
       },
       {
