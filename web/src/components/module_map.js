@@ -234,30 +234,32 @@ const ModuleMap = () => {
                 console.log( 'mouse on node ' + this.style('content') );
               });
               cy.elements().bind("mouseover", (event) => {
-                event.target.popperRefObj = event.target.popper({
-                  content: () => {
-                    let content = document.createElement("div");
+                if (event.target._private.data.description) {
+                  event.target.popperRefObj = event.target.popper({
+                    content: () => {
+                      let content = document.createElement("div");
 
-                    content.classList.add("popper-div");
+                      content.classList.add("popper-div");
 
-                    // content.innerHTML = event.target.id();
-                    // console.log("EVENT =");
-                    // console.log(event);
-                    // console.log("EVENT TARGET=");
-                    // console.log(event.target);
-                    content.innerHTML = event.target[0]._private.data.description
+                      // content.innerHTML = event.target.id();
+                      // console.log("EVENT =");
+                      // console.log(event);
+                      // console.log("EVENT TARGET=");
+                      console.log(event.target[0]._private.data.description, "length247");
+                      content.innerHTML = event.target[0]._private.data.description
 
-                    document.body.appendChild(content);
-                    return content;
-                  },
-                });
+                      document.body.appendChild(content);
+                      return content;
+                    },
+                  });
+                }
               });
               cy.on('tapend mouseout', 'node', function(){
                 console.log("This is for popup window when mouseout");
               });
               cy.elements().unbind("mouseout");
               cy.elements().bind("mouseout", (event) => {
-                if (event.target.popper) {
+                if (event.target._private.data.description) {
                   event.target.popperRefObj.state.elements.popper.remove();
                   event.target.popperRefObj.destroy();
                 }
