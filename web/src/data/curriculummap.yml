@@ -22,52 +22,52 @@
       title: "Single-core Computing"
       description: "The goal of this module is to provide you with basic knowledge about sequential computing (i.e., running a program on a single core)."
       href: "/pedagogic_modules/single_core_computing/"
-      position: [543.5, 409]
-    - number: "A.2"
-      title: "Multi-core Computing"
-      description: "The goal of this module is to introduce you to multi-core computing (i.e., running a program on multiple cores within the same computer)."
-      href: "/pedagogic_modules/networking_fundamentals/"
-      position: [261.75, 838]
+      position: [543.5, 100]
     - number: "A.3.1"
       title: "Distributed Computing: Networking Fundamentals"
       description: "The goal of this module is to provide you with knowledge of networking, as it relates to the performance of distributed computing applications."
       href: "/pedagogic_modules/multi_core_computing/"
-      position: [825.25, 838]
+      position: [261.75, 300]
+    - number: "A.2"
+      title: "Multi-core Computing"
+      description: "The goal of this module is to introduce you to multi-core computing (i.e., running a program on multiple cores within the same computer)."
+      href: "/pedagogic_modules/networking_fundamentals/"
+      position: [825.25, 300]
     - number: "A.3.2"
       title: "Distributed Computing: Client-Server"
       description: "The goal of this module is to introduce you to the fundamental client/server model of computation."
       href: "/pedagogic_modules/client_server/"
-      position: [261.75, 1267]
+      position: [261.75, 500]
     - number: "A.3.3"
       title: "Distributed Computing: Coordinator-Worker"
       description: "The goal of this module is to introduce you to the coordinator/worker model of computation, which in some sense extends client-server"
       href: "/pedagogic_modules/coordinator_worker/"
-      position: [543.5, 1267]
+      position: [543.5, 500]
     - number: "A.3.4"
       title: "Distributed Computing: Workflows"
       description: "The goal of this module is to introduce you to the workflow model of computation that is used in many real-world scientific applications."
       href: "/pedagogic_modules/workflows/"
-      position: [825.25, 1267]
+      position: [825.25, 500]
+    - number: "C.1"
+      title: "Batch Schedulincg"
+      description: "The goal of this module is to provide you with fundamental knowledge of and hands-on experience with the use of a batch scheduler."
+      href: "/pedagogic_modules/ci_service_concepts/"
+      position: [1107, 500]
     - number: "B.1"
       title: "Cyberinfrastructure Concepts"
       description: "The goal of this module is to provide you with basic knowledge about cyberinfrastructure (CI) services."
       href: "/pedagogic_modules/batch_scheduling/"
-      position: [1107, 1267]
-    - number: "C.1"
-      title: "Batch Scheduling"
-      description: "The goal of this module is to provide you with fundamental knowledge of and hands-on experience with the use of a batch scheduler."
-      href: "/pedagogic_modules/ci_service_concepts/"
-      position: [261.75, 1696]
+      position: [261.75, 800]
     - number: "C.2"
       title: "Cloud Functions"
       description: "The goal of this module is to provide you with fundamental knowledge of and hands-on experience with cloud functions."
       href: "/pedagogic_modules/cloud_functions/"
-      position: [543.5, 1696]
+      position: [543.5, 800]
     - number: "D.1"
       title: "Case Study: Energy-Aware Workflow Execution"
       description: "The goal of this module is to expose you to a real-world case-study  in which a scientific workflow application from the field of astronomy needs to be executed on various distributed computing resources as quickly as possible while paying attention to the overall carbon footprint of the execution."
       href: "/pedagogic_modules/workflow_co2/"
-      position: [1107, 1696]
+      position: [1107, 800]
 - SLOs:
     - description: "define the concepts of 'work' and of 'compute speed'"
       key: "slo_work_speed"

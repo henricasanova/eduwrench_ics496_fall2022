@@ -267,13 +267,13 @@ const ModuleMap = () => {
               {
                 selector: 'node',
                 style: {
-                  'background-color': 'transparent',
-                  'color': 'blue',
+                  'background-color': '#fbbd08',
+                  'color': 'white',
                   'label': 'data(label)',
                   'text-wrap': 'wrap',
                   'text-halign': 'center',
                   'text-valign': 'center',
-                  'font-size': '50',
+                  'font-size': '35',
                   'width': '120',
                   'height': '100'
                 }
@@ -283,8 +283,8 @@ const ModuleMap = () => {
                 style: {
                   'width': 3,
                   'curve-style': 'bezier',
-                  'line-color': '#333',
-                  'target-arrow-color': '#333',
+                  'line-color': '#808080',
+                  'target-arrow-color': '#808080',
                   'target-arrow-shape': 'triangle'
                 }
               },
