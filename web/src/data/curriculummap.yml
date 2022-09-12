@@ -611,5 +611,5 @@
         target: "B.1"
       - source: "A.3.2"
         target: "C.2"
-      - source: "A.3.4"
-        target: "D.1"
+      - source: "A.3.3"
+        target: "C.2"

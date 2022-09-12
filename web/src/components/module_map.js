@@ -9,10 +9,8 @@ import { ModuleCytoscapeGraph } from './curriculum_map';
 cytoscape.use( popper );
 
 const ModuleMap = () => {
-  const temp = ModuleCytoscapeGraph()
-  console.log(temp, 'in module map')
-  console.log(elements)
-  const elements = {
+  const elements = ModuleCytoscapeGraph()
+  const temp = {
     nodes: [
       {
         data: {
@@ -211,7 +209,8 @@ const ModuleMap = () => {
       },
     ],
   };
-
+  console.log(elements)
+  console.log(temp, 'in module map')
   return (
         <CytoscapeComponent
             elements={CytoscapeComponent.normalizeElements(elements)}
