@@ -209,8 +209,6 @@ const ModuleMap = () => {
       },
     ],
   };
-  console.log(elements)
-  console.log(temp, 'in module map')
   return (
         <CytoscapeComponent
             elements={CytoscapeComponent.normalizeElements(elements)}
@@ -231,8 +229,6 @@ const ModuleMap = () => {
                 }
 				      });
               cy.on('tapstart mouseover', 'node', function(){
-                console.log("This is for popup window when mouseover");
-                console.log( 'mouse on node ' + this.style('content') );
                 containerStyle['cursor'] = 'pointer'
               });
               cy.on('tapstart mouseout', 'node', function(){
@@ -250,9 +246,7 @@ const ModuleMap = () => {
                       // console.log("EVENT =");
                       // console.log(event);
                       // console.log("EVENT TARGET=");
-                      console.log(event.target[0]._private.data.description, "length247");
                       content.innerHTML = event.target[0]._private.data.description
-                      console.log(event.target[0]._private.position)
 
                       document.body.appendChild(content);
                       return content;
@@ -264,9 +258,6 @@ const ModuleMap = () => {
                       }),
                   });
                 }
-              });
-              cy.on('tapend mouseout', 'node', function(){
-                console.log("This is for popup window when mouseout");
               });
               cy.elements().unbind("mouseout");
               cy.elements().bind("mouseout", (event) => {
@@ -286,9 +277,10 @@ const ModuleMap = () => {
                   'text-wrap': 'wrap',
                   'text-halign': 'center',
                   'text-valign': 'center',
-                  'font-size': '35',
-                  'width': '120',
-                  'height': '100'
+                  'font-size': '10',
+                  'width': '250',
+                  'height': '120',
+                  'shape': 'rectangle'
                 }
               },
               {

@@ -83,7 +83,7 @@ export const ModuleCytoscapeGraph = () => {
     return {
       data: {
         id: module.number,
-        label: module.number,
+        label: `${module.number} : ${module.title}`,
         href: module.href,
         description: module.description,
       },
