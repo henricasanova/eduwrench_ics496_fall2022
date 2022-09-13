@@ -222,6 +222,7 @@ const ModuleMap = () => {
             boxSelectionEnabled={false}
             zoomingEnabled={false}
             cy={(cy) => {
+              const containerStyle = cy.container().style;
               cy.on('tap', 'node', function(){
                 try {
                   window.open( this.data('href') );
@@ -232,6 +233,10 @@ const ModuleMap = () => {
               cy.on('tapstart mouseover', 'node', function(){
                 console.log("This is for popup window when mouseover");
                 console.log( 'mouse on node ' + this.style('content') );
+                containerStyle['cursor'] = 'pointer'
+              });
+              cy.on('tapstart mouseout', 'node', function(){
+                containerStyle['cursor'] = 'default'
               });
               cy.elements().bind("mouseover", (event) => {
                 if (event.target._private.data.description) {
@@ -247,10 +252,16 @@ const ModuleMap = () => {
                       // console.log("EVENT TARGET=");
                       console.log(event.target[0]._private.data.description, "length247");
                       content.innerHTML = event.target[0]._private.data.description
+                      console.log(event.target[0]._private.position)
 
                       document.body.appendChild(content);
                       return content;
                     },
+                      renderedPosition: () => ({
+                        x: event.target[0]._private.position.x,
+                        y: (event.target[0]._private.position.y === 900 && event.target[0]._private.position.x === 1107)?
+                            event.target[0]._private.position.y-280: event.target[0]._private.position.y-230
+                      }),
                   });
                 }
               });
@@ -285,8 +296,8 @@ const ModuleMap = () => {
                 style: {
                   'width': 3,
                   'curve-style': 'bezier',
-                  'line-color': '#808080',
-                  'target-arrow-color': '#808080',
+                  'line-color': '#d38000',
+                  'target-arrow-color': '#d38000',
                   'target-arrow-shape': 'triangle'
                 }
               },
