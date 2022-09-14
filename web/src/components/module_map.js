@@ -253,7 +253,7 @@ const ModuleMap = () => {
                     },
                       renderedPosition: () => ({
                         x: event.target[0]._private.position.x,
-                        y: (event.target[0]._private.position.y === 900 && event.target[0]._private.position.x === 1107)?
+                        y: (event.target[0]._private.position.y === 800 && event.target[0]._private.position.x === 1000)?
                             event.target[0]._private.position.y-280: event.target[0]._private.position.y-230
                       }),
                   });
