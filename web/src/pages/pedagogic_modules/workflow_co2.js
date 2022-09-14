@@ -18,6 +18,10 @@ const Workflow_co2 = () => {
       let reader = new FileReader();
       reader.onload = onReaderLoad;
       reader.readAsText(event.target.files[0]);
+      reader.onload = event => {
+        console.log("event.target.result", event.target.result);
+        setFile(event.target.result);
+      }
     }
     function onReaderLoad(event){
       console.log(event.target.result);
@@ -49,7 +53,11 @@ const Workflow_co2 = () => {
               <input type="file" onChange={onChange}/>
               <button type="submit">Upload</button>
             </form>
-
+            {" ------------------------ file content ------------------------ "}
+            <br></br>
+            {file}
+            <br></br>
+          
             <Tab className="tab-panes" renderActiveOnly={true} panes={[
                 {
                     menuItem: {
