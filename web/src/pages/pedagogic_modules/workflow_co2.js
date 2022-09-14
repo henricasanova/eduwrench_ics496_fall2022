@@ -4,6 +4,7 @@ import Seo from "../../components/seo"
 import { Segment, Tab } from "semantic-ui-react"
 import "katex/dist/katex.min.css"
 import "./pedagogic_modules.css"
+import { useState } from "react"
 
 import LocalComputing from "./include_thrustd_cloud/local_computing"
 import CloudComputing from "./include_thrustd_cloud/cloud_computing"
@@ -11,6 +12,19 @@ import CloudComputing from "./include_thrustd_cloud/cloud_computing"
 const Workflow_co2 = () => {
 
     const module = "D.1"
+
+    const [file, setFile] = useState([]);
+    function onChange(event) {
+      let reader = new FileReader();
+      reader.onload = onReaderLoad;
+      reader.readAsText(event.target.files[0]);
+    }
+    function onReaderLoad(event){
+      console.log(event.target.result);
+      let obj = JSON.parse(event.target.result);
+      console.log(obj);
+      setFile(obj);
+    }
 
     return (
         <Layout>
@@ -29,6 +43,12 @@ const Workflow_co2 = () => {
                 <br /><br />
                 Go through the two tabs below in sequence…
             </Segment>
+
+            <form>
+              <h1>Json File Upload</h1>
+              <input type="file" onChange={onChange}/>
+              <button type="submit">Upload</button>
+            </form>
 
             <Tab className="tab-panes" renderActiveOnly={true} panes={[
                 {
