@@ -1,0 +1,55 @@
+{
+  "name": "Yeji",
+  "description": "wfformat description",
+  "createAt": "2020-03-20T15:19:28-08:00",
+  "schemaVersion": "1.3",
+  "wms": {
+    "name": "wms name",
+    "version": "1.3",
+    "url": "https://wfcommons.org/format"
+  },
+  "author": {
+    "name": "author name",
+    "email": "author@email.org",
+    "institution": "UH Manoa",
+    "country": "US"
+  },
+  "workflow": {
+    "makespan": 0,
+    "executedAt": "2022-09-18T11:44:14.049Z",
+    "tasks": [
+      {
+        "name": "task name",
+        "id": "123",
+        "category": "hi",
+        "type": "compute",
+        "command": {
+          "program": "node",
+          "arguments": [
+            "run"
+          ]
+        },
+        "parents": [
+          "1aZ.0_"
+        ],
+        "files": [
+          {
+            "name": "file name",
+            "size": 100,
+            "link": "input"
+          }
+        ],
+        "runtime": 0,
+        "cores": 10,
+        "avgCPU": 0,
+        "bytesRead": 0,
+        "bytesWritten": 0,
+        "memory": 0,
+        "energy": 0,
+        "avgPower": 0,
+        "priority": 0,
+        "machine": "windows"
+      }
+    ]
+  }
+}

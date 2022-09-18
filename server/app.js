@@ -6,6 +6,8 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  */
+const Validator = require('jsonschema').Validator;
+const { readFile } = require("fs/promises")
 
 const express = require("express"),
     app = express(),
@@ -141,6 +143,20 @@ app.post("/run/workflow_execution_fundamentals", function (req, res) {
             task_data: JSON.parse(fs.readFileSync("/tmp/workflow_data.json")),
         });
     }
+});
+
+// execute workflow execution fundamentals simulation route
+app.post("/run/jsonSchemaValidate", async function (req, res) {
+  const wfSchema = await readFile('data/Wfcommons-schema/wfcommons-schema.json',{encoding: "utf-8"}).then(data => JSON.parse(data))
+  // console.log(wfSchema)
+
+  const v = new Validator();
+
+  // console.log(req.body)
+  const validated = v.validate(req.body, wfSchema)
+  // console.log(validated)
+  // console.log(validated.valid);
+  return res.status(200).json(validated.valid ? { valid: validated.valid, ...req.body} : {valid: validated.valid, errors: validated.errors})
 });
 
 // execute activity 1 simulation route
