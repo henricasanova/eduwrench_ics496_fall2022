@@ -12,7 +12,7 @@ import axios from 'axios';
 const WfFormat = {
   name: "Yeji", // none empty *
   description: "whatever", // none empty
-  createdAt: new Date().toISOString(), // none empty time-format-iso
+  createdAt: Date().toISOString, // none empty time-format-iso
   schemaVersion: "", // "1.0","1.1","1.2","1.3" *
   wms: {
     name: "wms name", // none empty *
@@ -23,7 +23,7 @@ const WfFormat = {
     name: "", // none empty *
     email: "", // none empty email *
     institution: "", // none empty
-    country: "" // none empty 
+    country: "" // none empty
   },
   workflow: { // *
     makespan: 0, // *
@@ -173,11 +173,27 @@ function buildWfJson(){
   // console.log(iso8601string)
 }
 
+function countFileName(data) {
+  const temp = data.workflow.tasks
+  let temp2 = []
+  for (let element of temp) {
+    const temp3 = {
+      name: element.name,
+      children: element.children,
+      parents: element.parents,
+      files: element.files,
+    }
+    temp2.push(temp3)
+  }
+ return temp2
+}
+
 const Workflow_co2 = () => {
 
     const module = "D.1"
 
     const [file, setFile] = useState([]);
+    const [isTrue, setIsTrue] = useState(false)
     const [render, setRender] = useState();
 
     React.useState(() => {
@@ -190,6 +206,7 @@ const Workflow_co2 = () => {
         const obj = JSON.parse(event.target.result)
         console.log("event.target.result", obj);
         setFile(obj);
+        setIsTrue(true)
       }
     }
 
@@ -206,7 +223,11 @@ const Workflow_co2 = () => {
           }
       )
     }
-
+    console.log('counter')
+    if (isTrue) {
+    const temp4 = countFileName(file)
+    console.log(temp4)
+    }
     return (
         <Layout>
             <Seo title="D.1. Case Study: Energy-Aware Workflow Execution" />
