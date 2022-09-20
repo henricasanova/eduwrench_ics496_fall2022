@@ -67,6 +67,10 @@ const Header = props => {
             About
           </Menu.Item>
 
+          <Menu.Item href="/displayInfo" className="menu-item">
+            Display JSON
+          </Menu.Item>
+
           <Auth />
 
         </Menu>
