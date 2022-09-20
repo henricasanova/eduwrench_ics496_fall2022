@@ -228,7 +228,7 @@ const DisplayInfo = () => {
           </Table.Header>
           {temp4.length > 0 ? <Table.Body>
             <>
-            {temp4.map(t => <Table.Row>
+            {temp4.map(t => <Table.Row key={t.name}>
               <Table.Cell>{t.name}</Table.Cell>
               <Table.Cell>{t.children}</Table.Cell>
               <Table.Cell>{t.parents}</Table.Cell>
