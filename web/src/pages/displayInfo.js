@@ -120,6 +120,7 @@ const DisplayInfo = () => {
 
   function bottomUp(node) {
     const { name, parents } = node
+    console.log(name)
     // console.log(name, parents)
     if (file[index] > 0) {
       return file[index].topLevel;
