@@ -52,9 +52,6 @@ const addNodesInLevelsDictionary = nodes => {
 
 const bottomUpLevel = (nodesObj, nodeName, partition) => {
   const node = nodesObj[nodeName]
-
-  console.log(node.name)
-
   if (nodesObj[node.name].hasOwnProperty("topLevel"))
     return nodesObj[node.name].topLevel
 
@@ -83,6 +80,16 @@ const sortNodesOnSameLevel = (level, sortField) => level.sort((x, y) => x[sortFi
 
 const sortLevel = (levelDictionary, field) => levelDictionary.map(level => sortNodesOnSameLevel(level, field))
 
+const compute = (data, index) => {
+  let length = 1000 / (data.length * 2)
+  let i = length
+  for (let element of data) {
+    element.position = { y: i, x: index * 10}
+    i += (length * 2)
+  }
+  return data;
+}
+
 const DisplayInfoV2 = () => {
   // raw file data
   const [file, setFile] = useState({})
@@ -90,24 +97,33 @@ const DisplayInfoV2 = () => {
   const [result, setResult] = useState([])
   // number of total nodes/tasks
   const [totalNodes, setTotalNodes] = useState(0)
+  // temp
+  const [temp, setTemp] = useState(false)
+  // isTrue
+  const [isTrue, setIsTrue] = useState(false)
 
   React.useEffect(() => {
     if (file) {
       let jsonFile = Object.values(file)
       // console.log(jsonFile)
       jsonFile = jsonFile.filter(task => task.children.length === 0 ? task : false)
-      jsonFile.forEach(bottomNode =>bottomUpLevel(file, bottomNode.name, result))
+      console.log(result)
+      jsonFile.forEach(bottomNode => bottomUpLevel(file, bottomNode.name, result))
       setResult([...result])
     }
+    setTemp(result)
+    setIsTrue(true)
   }, [file])
+
+  const temp2 = isTrue ? temp.map((t, index) => compute(t, index)) : 'nothing'
+
+  console.log(temp2)
 
   function onChange(event) {
     const reader = new FileReader()
     reader.readAsText(event.target.files[0])
     reader.onload = event => {
       const jsonData = JSON.parse(event.target.result).workflow.tasks
-
-      console.log(jsonData)
 
       const fileEntries = jsonData.map(node => [node.name, node])
 
