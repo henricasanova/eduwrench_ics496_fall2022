@@ -3,6 +3,8 @@ import Layout from "../components/layout"
 import PageHeader from "../components/page_header"
 import { Container, Segment, Table } from "semantic-ui-react"
 import { useState } from "react"
+import JsonCytoscape from "../components/display_cytoscape"
+import DisplayCytoscape from '../components/display_cytoscape';
 
 /*
 type Node = {
@@ -109,6 +111,19 @@ const DisplayInfoV2 = () => {
       jsonFile = jsonFile.filter(task => task.children.length === 0 ? task : false)
       console.log(result)
       jsonFile.forEach(bottomNode => bottomUpLevel(file, bottomNode.name, result))
+
+      // temporarily given x and y values for testing
+      const wPivot = 450
+      const hPivot = 100
+
+      result.forEach((nodes, height) => {
+        nodes.forEach((node, index) =>{
+          node.x = index % 2 === 0 ? wPivot - (index * 300) : wPivot + (index * 300)
+          node.y = hPivot + (height * 100)
+        })
+      })
+      // till here
+
       setResult([...result])
     }
     setTemp(result)
@@ -127,6 +142,7 @@ const DisplayInfoV2 = () => {
 
       const fileEntries = jsonData.map(node => [node.name, node])
 
+      setResult([]) // re-set the result to empty array
       setFile(Object.fromEntries(fileEntries))
       setTotalNodes(fileEntries.length)
     }
@@ -135,7 +151,7 @@ const DisplayInfoV2 = () => {
   return (
     <Layout>
       <PageHeader title="Display" />
-      <Container>
+      <Container style={{marginBottom: "20px"}}>
         <Segment textAlign={"center"}>
           <div>
             <h1>Json File Upload</h1>
@@ -144,6 +160,7 @@ const DisplayInfoV2 = () => {
           --------------------------- file content ---------------------------
           <div>Total Task: {totalNodes && totalNodes}</div>
         </Segment>
+        {result.length > 0 && <DisplayCytoscape width={1000}  height={1000} levels={result} file={file} />}
         {
           <Table celled>
             <Table.Header>
