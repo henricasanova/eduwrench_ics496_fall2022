@@ -49,12 +49,7 @@ const DisplayCytoscape = ({ width, height, levels, file }) => {
       <CytoscapeComponent
         elements={CytoscapeComponent.normalizeElements(elements)}
         maxZoom={10}
-        minZoom={0.6}
-        autolock={true}
-        autoungrabify={true}
-        autounselectify={true}
-        boxSelectionEnabled={false}
-        zoomingEnabled={false}
+        minZoom={0.2}
         cy={cy => (cyRef.current = cy)}
         stylesheet={[
           {
@@ -81,7 +76,7 @@ const DisplayCytoscape = ({ width, height, levels, file }) => {
             },
           },
         ]}
-        style={{ "minHeight": "1500px", "maxHeight": "2000px" }}
+        style={{ "minHeight": `${width}px`, "maxHeight": `${height}px` }}
       />
     </>
   )

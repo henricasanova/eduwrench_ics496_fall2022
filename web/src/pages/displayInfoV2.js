@@ -51,6 +51,16 @@ const addNodesInLevelsDictionary = nodes => {
 }
  */
 
+const findEdgeCrossing = (flowArray) => {
+  let newArray = []
+  for (let element of flowArray) {
+    newArray.push(element)
+    for (let element2 of newArray) {
+     console.log('here')
+    }
+  }
+};
+
 
 const bottomUpLevel = (nodesObj, nodeName, partition) => {
   const node = nodesObj[nodeName]
@@ -65,10 +75,10 @@ const bottomUpLevel = (nodesObj, nodeName, partition) => {
   }
 
   const level = 1 + node.parents.reduce((max, parentName) => {
-      const level = bottomUpLevel(nodesObj, parentName, partition)
-      if (max < level) max = level
-      return max
-    }, 0)
+    const level = bottomUpLevel(nodesObj, parentName, partition)
+    if (max < level) max = level
+    return max
+  }, 0)
 
   node.topLevel = node.topLevel === undefined || node.topLevel < level ? level : node.topLevel
 
@@ -83,10 +93,11 @@ const sortNodesOnSameLevel = (level, sortField) => level.sort((x, y) => x[sortFi
 const sortLevel = (levelDictionary, field) => levelDictionary.map(level => sortNodesOnSameLevel(level, field))
 
 const compute = (data, index) => {
-  let length = 1000 / (data.length * 2)
+  let length = 3000 / (data.length * 2)
   let i = length
   for (let element of data) {
-    element.position = { y: i, x: index * 10}
+    element.x = i;
+    element.y = index * 250;
     i += (length * 2)
   }
   return data;
@@ -117,7 +128,7 @@ const DisplayInfoV2 = () => {
       const hPivot = 100
 
       result.forEach((nodes, height) => {
-        nodes.forEach((node, index) =>{
+        nodes.forEach((node, index) => {
           node.x = index % 2 === 0 ? wPivot - (index * 300) : wPivot + (index * 300)
           node.y = hPivot + (height * 100)
         })
@@ -150,17 +161,17 @@ const DisplayInfoV2 = () => {
 
   return (
     <Layout>
-      <PageHeader title="Display" />
-      <Container style={{marginBottom: "20px"}}>
+      <PageHeader title="Display"/>
+      <Container style={{ marginBottom: "20px" }}>
         <Segment textAlign={"center"}>
           <div>
             <h1>Json File Upload</h1>
-            <input type="file" onChange={onChange} />
+            <input type="file" onChange={onChange}/>
           </div>
           --------------------------- file content ---------------------------
           <div>Total Task: {totalNodes && totalNodes}</div>
         </Segment>
-        {result.length > 0 && <DisplayCytoscape width={1000}  height={1000} levels={result} file={file} />}
+        {result.length > 0 && <DisplayCytoscape width={3000} height={temp2.length * 500} levels={temp2} file={file}/>}
         {
           <Table celled>
             <Table.Header>
