@@ -51,17 +51,6 @@ const addNodesInLevelsDictionary = nodes => {
 }
  */
 
-const findEdgeCrossing = (flowArray) => {
-  let newArray = []
-  for (let element of flowArray) {
-    newArray.push(element)
-    for (let element2 of newArray) {
-     console.log('here')
-    }
-  }
-};
-
-
 const bottomUpLevel = (nodesObj, nodeName, partition) => {
   const node = nodesObj[nodeName]
   if (nodesObj[node.name].hasOwnProperty("topLevel"))
