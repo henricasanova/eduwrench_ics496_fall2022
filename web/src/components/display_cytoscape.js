@@ -19,7 +19,7 @@ const DisplayCytoscape = ({ width, height, levels, file }) => {
               position: { x, y },
             })
 
-            element.edges = node.children.length > 0 ? node.children.map(childName => {
+            const edges = node.children.length > 0 ? node.children.map(childName => {
               const { id: childId } = file[childName]
 
               return {
@@ -30,6 +30,8 @@ const DisplayCytoscape = ({ width, height, levels, file }) => {
                 }
               }
             }) : []
+
+            element.edges = element.edges.concat(edges)
 
             return element
           }, { nodes: [], edges: [] })
