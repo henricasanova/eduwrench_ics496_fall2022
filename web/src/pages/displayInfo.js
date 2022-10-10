@@ -4,6 +4,46 @@ import PageHeader from '../components/page_header';
 import { Container, Segment, Table } from 'semantic-ui-react';
 import DisplayCytoscape from '../components/display_cytoscape';
 
+// function checkSegments(a, b, c) {
+//   // console.log((c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x), (c.y - a.y), (b.x - a.x), (b.y - a.y), (c.x - a.x))
+//   return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x)
+// }
+//
+// function isIntersection(a, b, c, d) {
+//   return checkSegments(b, c, d) !== checkSegments(a, c, d) && checkSegments(a, b, c) !== checkSegments(a, b, d)
+// }
+
+function isIntersection(a, b, c, d) {
+  const top = (d.x - c.x) * (a.y - c.y) - (d.y - c.y) * (a.x - c.x)
+  const bottom = (d.y - c.y) * (b.x - a.x) - (d.x - c.x) * (b.y - a.y)
+  const point = top / bottom
+  console.log(point, ((point > 0.4) && (point < 0.6)))
+  return (point > 0.4) && (point < 0.6)
+}
+
+function lineSweep(arr, nodeLength) {
+  let checkingArray = []
+  for (let j = 0; j <= nodeLength; j++) {
+    // console.log(j, true)
+    for (let element of arr) {
+      if (element[0].topLevel === j) {
+        // console.log('print if true', element, j)
+        checkingArray.push(element)
+      }
+    }
+    const takeOut = []
+    for (const [i, checkingElement] of checkingArray.entries()) {
+      if (checkingElement[1].topLevel === j) {
+        for (const newElement of checkingArray) {
+          const isIt = isIntersection({ x: checkingElement[0].x, y: checkingElement[0].y }, { x: checkingElement[1].xPrime, y: checkingElement[1].yPrime }, { x: newElement[0].x, y: newElement[0].y }, { x: newElement[1].xPrime, y: newElement[1].yPrime })
+          console.log(checkingElement, newElement, isIt, j)
+        }
+        checkingArray.shift()
+      }
+    }
+  }
+}
+
 const bottomUpLevel = (nodesObj, nodeName, partition) => {
   const node = nodesObj[nodeName]
   if (nodesObj[node.name].hasOwnProperty("topLevel"))
@@ -33,13 +73,13 @@ const sortNodesOnSameLevel = (level, sortField) => level.sort((x, y) => x[sortFi
 
 const sortLevel = (levelDictionary, field) => levelDictionary.map(level => sortNodesOnSameLevel(level, field))
 
-const compute = (data, index) => {
+const compute = (data) => {
   let length = 3000 / (data.length * 2)
   let i = length
   for (let element of data) {
     element.isItTrue = false
     element.x = i
-    element.y = index * 250
+    element.y = element.topLevel * 250
     i += (length * 2)
   }
   return data;
@@ -60,7 +100,6 @@ const DisplayInfo = () => {
   const [tuple, setTuple] = useState([])
 
 
-
   React.useEffect(() => {
     if (file) {
       let jsonFile = Object.values(file)
@@ -73,28 +112,34 @@ const DisplayInfo = () => {
     }
   }, [file])
 
-  const temp2 = result.length > 0 ? result.map((t, index) => compute(t, index)) : false
+  const temp2 = result.length > 0 ? result.map((t) => compute(t)) : false
   let tupleList = []
 
   function getNodeXAndY(nodeElement) {
     const newTemp = temp.filter((t) => t.name === nodeElement)
-    console.log(newTemp)
     return newTemp[0]
   }
 
   function getSegment(nod) {
     console.log(nod)
-    const { children, x, y, name } = nod
-    if (nod.children <= 0) {
+    const { children, x, y, name, topLevel } = nod
+    if (nod.children.length <= 0) {
       return 0;
     }
     for (let element of children) {
       const newTuple = getNodeXAndY(element)
-      tuple.push([x, y, newTuple.x, newTuple.y, name, newTuple.name])
+      tuple.push([{ name, x, y, topLevel }, { name: newTuple.name, xPrime: newTuple.x, yPrime: newTuple.y, topLevel: newTuple.topLevel }])
     }
+    // { x, y, xPrime: newTuple.x, yPrime: newTuple.y, name, topLevel }
   }
-  const temp3 = temp2 ? temp2.map(r => r.map(newR => getSegment(newR))) : 'nothing'
+
+  const temp3 = temp2 ? temp2.map(r => r.map(newR => getSegment(newR))) : false
+
   console.log(tuple)
+
+  const temp4 = temp3 ? lineSweep(tuple, result.length - 1) : 'nothing'
+
+
   function onChange(event) {
     const reader = new FileReader()
     reader.readAsText(event.target.files[0])
@@ -102,7 +147,6 @@ const DisplayInfo = () => {
       const jsonData = JSON.parse(event.target.result).workflow.tasks
 
       const fileEntries = jsonData.map(node => [node.name, node])
-
       setResult([]) // re-set the result to empty array
       setFile(Object.fromEntries(fileEntries))
       setTotalNodes(fileEntries.length)
