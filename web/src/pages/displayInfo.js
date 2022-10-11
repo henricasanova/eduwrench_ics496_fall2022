@@ -13,36 +13,35 @@ import DisplayCytoscape from '../components/display_cytoscape';
 //   return checkSegments(b, c, d) !== checkSegments(a, c, d) && checkSegments(a, b, c) !== checkSegments(a, b, d)
 // }
 
-function isIntersection(a, b, c, d) {
-  const top = (d.x - c.x) * (a.y - c.y) - (d.y - c.y) * (a.x - c.x)
-  const bottom = (d.y - c.y) * (b.x - a.x) - (d.x - c.x) * (b.y - a.y)
-  const point = top / bottom
-  console.log(point, ((point > 0.4) && (point < 0.6)))
-  return (point > 0.4) && (point < 0.6)
-}
-
-function lineSweep(arr, nodeLength) {
-  let checkingArray = []
-  for (let j = 0; j <= nodeLength; j++) {
-    // console.log(j, true)
-    for (let element of arr) {
-      if (element[0].topLevel === j) {
-        // console.log('print if true', element, j)
-        checkingArray.push(element)
-      }
-    }
-    const takeOut = []
-    for (const [i, checkingElement] of checkingArray.entries()) {
-      if (checkingElement[1].topLevel === j) {
-        for (const newElement of checkingArray) {
-          const isIt = isIntersection({ x: checkingElement[0].x, y: checkingElement[0].y }, { x: checkingElement[1].xPrime, y: checkingElement[1].yPrime }, { x: newElement[0].x, y: newElement[0].y }, { x: newElement[1].xPrime, y: newElement[1].yPrime })
-          console.log(checkingElement, newElement, isIt, j)
-        }
-        checkingArray.shift()
-      }
-    }
-  }
-}
+// function isIntersection(a, b, c, d) {
+//   const top = (d.x - c.x) * (a.y - c.y) - (d.y - c.y) * (a.x - c.x)
+//   const bottom = (d.y - c.y) * (b.x - a.x) - (d.x - c.x) * (b.y - a.y)
+//   const point = top / bottom
+//   console.log(point, ((point > 0.4) && (point < 0.6)))
+//   return (point > 0.4) && (point < 0.6)
+// }
+//
+// function lineSweep(arr, nodeLength) {
+//   let checkingArray = []
+//   for (let j = 0; j <= nodeLength; j++) {
+//     // console.log(j, true)
+//     for (let element of arr) {
+//       if (element[0].topLevel === j) {
+//         // console.log('print if true', element, j)
+//         checkingArray.push(element)
+//       }
+//     }
+//     for (const checkingElement of checkingArray) {
+//       if (checkingElement[1].topLevel === j) {
+//         for (const newElement of checkingArray) {
+//           const isIt = isIntersection({ x: checkingElement[0].x, y: checkingElement[0].y }, { x: checkingElement[1].xPrime, y: checkingElement[1].yPrime }, { x: newElement[0].x, y: newElement[0].y }, { x: newElement[1].xPrime, y: newElement[1].yPrime })
+//           console.log(checkingElement, newElement, isIt, j)
+//         }
+//         checkingArray.shift()
+//       }
+//     }
+//   }
+// }
 
 const bottomUpLevel = (nodesObj, nodeName, partition) => {
   const node = nodesObj[nodeName]
@@ -73,21 +72,21 @@ const sortNodesOnSameLevel = (level, sortField) => level.sort((x, y) => x[sortFi
 
 const sortLevel = (levelDictionary, field) => levelDictionary.map(level => sortNodesOnSameLevel(level, field))
 
-const compute = (data) => {
-  let length = 3000 / (data.length * 2)
-  let i = length
-  for (let element of data) {
-    element.isItTrue = false
-    element.x = i
-    element.y = element.topLevel * 250
-    i += (length * 2)
-  }
-  return data;
-}
+// const compute = (data) => {
+//   let length = 3000 / (data.length * 2)
+//   let i = length
+//   for (let element of data) {
+//     element.isItTrue = false
+//     element.x = i
+//     element.y = element.topLevel * 250
+//     i += (length * 2)
+//   }
+//   return data;
+// }
 
 const DisplayInfo = () => {
   // raw file data
-  const [file, setFile] = useState({})
+  const [file, setFile] = useState(false)
   // top level defined array - index is the level
   const [result, setResult] = useState([])
   // number of total nodes/tasks
@@ -98,8 +97,13 @@ const DisplayInfo = () => {
   const [isTrue, setIsTrue] = useState(false)
   //
   const [tuple, setTuple] = useState([])
+  //
+  const [ifTrue, setIfTrue] = useState(false)
+  //
+  const [oneTrue, setOneTrue] = useState(false)
+  const [renderArray, setRenderArray] = useState(false)
 
-
+  // useEffect to find the lowest children using children parameter from the jsonFile array object.
   React.useEffect(() => {
     if (file) {
       let jsonFile = Object.values(file)
@@ -107,40 +111,98 @@ const DisplayInfo = () => {
       jsonFile = jsonFile.filter(task => task.children.length === 0)
       jsonFile.forEach(bottomNode => bottomUpLevel(file, bottomNode.name, result))
       setResult([...result])
-      setTemp(result.flat())
       setIsTrue(true)
+      setTemp(result.flat())
     }
   }, [file])
 
-  const temp2 = result.length > 0 ? result.map((t) => compute(t)) : false
-  let tupleList = []
-
-  function getNodeXAndY(nodeElement) {
-    const newTemp = temp.filter((t) => t.name === nodeElement)
-    return newTemp[0]
-  }
-
-  function getSegment(nod) {
-    console.log(nod)
-    const { children, x, y, name, topLevel } = nod
-    if (nod.children.length <= 0) {
-      return 0;
+  React.useEffect(() => {
+    if (isTrue) {
+      const compute = (data) => {
+        let length = 3000 / (data.length * 2)
+        let i = length
+        for (let element of data) {
+          element.x = i
+          element.y = element.topLevel * 250
+          i += (length * 2)
+        }
+        return data
+      }
+      const something = result.map(node => compute(node));
+      setOneTrue(true)
     }
-    for (let element of children) {
-      const newTuple = getNodeXAndY(element)
-      tuple.push([{ name, x, y, topLevel }, { name: newTuple.name, xPrime: newTuple.x, yPrime: newTuple.y, topLevel: newTuple.topLevel }])
+    setIsTrue(false)
+  },[isTrue])
+
+  React.useEffect(() => {
+    if (oneTrue) {
+      function getNodeXAndY(nodeElement) {
+        const newTemp = temp.filter((t) => t.name === nodeElement)
+        return newTemp[0]
+      }
+
+      function getSegment(nod) {
+        // console.log(nod)
+        const { children, x, y, name, topLevel } = nod
+        if (nod.children.length <= 0) {
+          return 0;
+        }
+        for (let element of children) {
+          const newTuple = getNodeXAndY(element)
+          tuple.push([{ name, x, y, topLevel }, { name: newTuple.name, xPrime: newTuple.x, yPrime: newTuple.y, topLevel: newTuple.topLevel }])
+        }
+      }
+      result.forEach(r => r.forEach(newR => getSegment(newR)))
+      setIfTrue(true)
     }
-    // { x, y, xPrime: newTuple.x, yPrime: newTuple.y, name, topLevel }
-  }
+    setOneTrue(false)
+  }, [oneTrue])
 
-  const temp3 = temp2 ? temp2.map(r => r.map(newR => getSegment(newR))) : false
+  React.useEffect(() => {
+    if (ifTrue) {
+      // console.log(tuple, 'linesweep')
+      function isIntersection(a, b, c, d) {
+        const top = (d.x - c.x) * (a.y - c.y) - (d.y - c.y) * (a.x - c.x)
+        const bottom = (d.y - c.y) * (b.x - a.x) - (d.x - c.x) * (b.y - a.y)
+        const point = top / bottom
+        // console.log(point, ((point > 0.4) && (point < 0.6)))
+        return (point > 0.4) && (point < 0.6)
+      }
 
-  console.log(tuple)
+      function lineSweep(arr, nodeLength) {
+        const newArray = []
+        let checkingArray = []
+        for (let j = 0; j <= nodeLength; j++) {
+          // console.log(j, true)
+          for (let element of arr) {
+            if (element[0].topLevel === j) {
+              // console.log('print if true', element, j)
+              checkingArray.push(element)
+            }
+          }
+          for (const checkingElement of checkingArray) {
+            if (checkingElement[1].topLevel === j) {
+              for (const newElement of checkingArray) {
+                const isIt = isIntersection({ x: checkingElement[0].x, y: checkingElement[0].y }, { x: checkingElement[1].xPrime, y: checkingElement[1].yPrime }, { x: newElement[0].x, y: newElement[0].y }, { x: newElement[1].xPrime, y: newElement[1].yPrime })
+                if (isIt) {
+                  newArray.push({ segmentA: `${checkingElement[0].name} - ${checkingElement[1].name}`, segmentB: `${newElement[0].name} - ${newElement[1].name}`, intersection: isIt.toString(), j })
+                }
+              }
+              checkingArray.shift()
+            }
+          }
+        }
+        return newArray
+      }
 
-  const temp4 = temp3 ? lineSweep(tuple, result.length - 1) : 'nothing'
+      const sweep = lineSweep(tuple, result.length - 1)
+      setRenderArray(sweep)
+    }
+    setIfTrue(false)
+  }, [ifTrue])
 
 
-  function onChange(event) {
+  async function onChange(event) {
     const reader = new FileReader()
     reader.readAsText(event.target.files[0])
     reader.onload = event => {
@@ -148,11 +210,12 @@ const DisplayInfo = () => {
 
       const fileEntries = jsonData.map(node => [node.name, node])
       setResult([]) // re-set the result to empty array
+      setRenderArray(false)
       setFile(Object.fromEntries(fileEntries))
       setTotalNodes(fileEntries.length)
     }
   }
-
+  console.log(renderArray)
   return (
     <Layout>
       <PageHeader title="Display"/>
@@ -165,63 +228,25 @@ const DisplayInfo = () => {
           --------------------------- file content ---------------------------
           <div>Total Task: {totalNodes && totalNodes}</div>
         </Segment>
-        {result.length > 0 && <DisplayCytoscape width={3000} height={result.length * 500} levels={result} file={file}/>}
         {
           <Table celled>
             <Table.Header>
               <Table.Row>
-                <Table.HeaderCell>Name</Table.HeaderCell>
-                <Table.HeaderCell>Children</Table.HeaderCell>
-                <Table.HeaderCell>Parents</Table.HeaderCell>
-                <Table.HeaderCell>
-                  Top Level
-                </Table.HeaderCell>
-                <Table.HeaderCell>
-                  Runtime
-                  <button
-                    onClick={e => setResult(sortLevel(result, "runtime"))}
-                  >
-                    sort
-                  </button>
-                </Table.HeaderCell>
-                <Table.HeaderCell>
-                  Memory
-                  <button onClick={e => setResult(sortLevel(result, "memory"))}>
-                    sort
-                  </button>
-                </Table.HeaderCell>
-                <Table.HeaderCell>
-                  AvgCPU
-                  <button onClick={e => setResult(sortLevel(result, "avgCPU"))}>
-                    sort
-                  </button>
-                </Table.HeaderCell>
-                <Table.HeaderCell>
-                  BytesRead
-                  <button
-                    onClick={e => setResult(sortLevel(result, "bytesRead"))}
-                  >
-                    sort
-                  </button>
-                </Table.HeaderCell>
+                <Table.HeaderCell>segment a</Table.HeaderCell>
+                <Table.HeaderCell>segment b</Table.HeaderCell>
+                <Table.HeaderCell>isIntersection</Table.HeaderCell>
+                <Table.HeaderCell>topLevel</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
-            {result.length > 0 ? (
+            {renderArray ? (
               <Table.Body>
-                {result.map(level =>
-                  level.map(node => (
-                    <Table.Row key={node.name}>
-                      <Table.Cell>{node.name}</Table.Cell>
-                      <Table.Cell>{node.children.length}</Table.Cell>
-                      <Table.Cell>{node.parents.length}</Table.Cell>
-                      <Table.Cell>{node.topLevel}</Table.Cell>
-                      <Table.Cell>{node.runtime}</Table.Cell>
-                      <Table.Cell>{node.memory}</Table.Cell>
-                      <Table.Cell>{node.avgCPU}</Table.Cell>
-                      <Table.Cell>{node.bytesRead}</Table.Cell>
-                    </Table.Row>
-                  ))
-                )}
+                {renderArray.map((level, index) =>
+                    <Table.Row key={index}>
+                      <Table.Cell>{level.segmentA}</Table.Cell>
+                      <Table.Cell>{level.segmentB}</Table.Cell>
+                      <Table.Cell>{level.intersection}</Table.Cell>
+                      <Table.Cell>{level.j}</Table.Cell>
+                    </Table.Row>)}
               </Table.Body>
             ) : null}
           </Table>

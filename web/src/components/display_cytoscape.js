@@ -3,7 +3,7 @@ import { useRef } from "react"
 import CytoscapeComponent from "react-cytoscapejs"
 
 const DisplayCytoscape = ({ width, height, levels, file }) => {
-  // console.log(width, height, levels, file)
+  console.log(width, height, levels, file)
   const [elements, setElements] = useState({ nodes: [], edges: [] })
 
   useEffect(() => {
