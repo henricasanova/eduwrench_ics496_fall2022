@@ -64,6 +64,8 @@ const bottomUpLevel = (nodesObj, nodeName, partition) => {
   }
 
   const level = 1 + node.parents.reduce((max, parentName) => {
+    if (!nodesObj[parentName].children) nodesObj[parentName].children = []
+    if (nodesObj[parentName].children.filter(child => child === nodeName).length === 0) nodesObj[parentName].children.push(nodeName)
     const level = bottomUpLevel(nodesObj, parentName, partition)
     if (max < level) max = level
     return max
@@ -73,6 +75,7 @@ const bottomUpLevel = (nodesObj, nodeName, partition) => {
 
   if (!partition[node.topLevel]) partition[node.topLevel] = []
   partition[node.topLevel].push(node)
+  node.index = partition[node.topLevel].length
 
   return node.topLevel
 }
@@ -108,10 +111,14 @@ const DisplayInfoV2 = () => {
     if (file) {
       let jsonFile = Object.values(file)
       // console.log(jsonFile)
-      jsonFile = jsonFile.filter(task => task.children.length === 0 ? task : false)
-      console.log(result)
+      jsonFile = jsonFile.filter(task => {
+        if (task.children === undefined) task.children = []
+        return task.children.length === 0 ? task : false
+      })
+
       jsonFile.forEach(bottomNode => bottomUpLevel(file, bottomNode.name, result))
 
+      console.log(result.flat().map((node, index) => { node.index = index; return node }))
       // temporarily given x and y values for testing
       const wPivot = 450
       const hPivot = 100
@@ -132,7 +139,7 @@ const DisplayInfoV2 = () => {
 
   const temp2 = isTrue ? temp.map((t, index) => compute(t, index)) : 'nothing'
 
-  console.log(temp2)
+  // console.log(temp2)
 
   function onChange(event) {
     const reader = new FileReader()
@@ -150,17 +157,17 @@ const DisplayInfoV2 = () => {
 
   return (
     <Layout>
-      <PageHeader title="Display"/>
+      <PageHeader title="Display" />
       <Container style={{ marginBottom: "20px" }}>
         <Segment textAlign={"center"}>
           <div>
             <h1>Json File Upload</h1>
-            <input type="file" onChange={onChange}/>
+            <input type="file" onChange={onChange} />
           </div>
           --------------------------- file content ---------------------------
           <div>Total Task: {totalNodes && totalNodes}</div>
         </Segment>
-        {result.length > 0 && <DisplayCytoscape width={3000} height={temp2.length * 500} levels={temp2} file={file}/>}
+        {result.length > 0 && <DisplayCytoscape width={3000} height={temp2.length * 500} levels={temp2} file={file} />}
         {
           <Table celled>
             <Table.Header>

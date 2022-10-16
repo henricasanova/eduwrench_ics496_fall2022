@@ -3,44 +3,44 @@ import { useRef } from "react"
 import CytoscapeComponent from "react-cytoscapejs"
 
 const DisplayCytoscape = ({ width, height, levels, file }) => {
-  console.log(width, height, levels, file)
+  // console.log(width, height, levels, file)
   const [elements, setElements] = useState({ nodes: [], edges: [] })
 
   useEffect(() => {
     setElements(
-        levels.reduce((elements, nodes) => {
+      levels.reduce((elements, nodes) => {
 
-          const element = nodes.reduce((element, node) => {
+        const element = nodes.reduce((element, node) => {
 
-            const { id, name: label, x, y } = node
+          const { id, name: label, x, y } = node
 
-            element.nodes.push({
-              data: { id, label },
-              position: { x, y },
-            })
+          element.nodes.push({
+            data: { id, label },
+            position: { x, y },
+          })
 
-            const edges = node.children.length > 0 ? node.children.map(childName => {
-              const { id: childId } = file[childName]
+          const edges = node.children.length > 0 ? node.children.map(childName => {
+            const { id: childId } = file[childName]
 
-              return {
-                data: {
-                  source: id,
-                  target: childId,
-                  label: childName,
-                }
+            return {
+              data: {
+                source: id,
+                target: childId,
+                label: childName,
               }
-            }) : []
+            }
+          }) : []
 
-            element.edges = element.edges.concat(edges)
+          element.edges = element.edges.concat(edges)
 
-            return element
-          }, { nodes: [], edges: [] })
+          return element
+        }, { nodes: [], edges: [] })
 
-          elements.nodes = elements.nodes.concat(element.nodes)
-          elements.edges = elements.edges.concat(element.edges)
+        elements.nodes = elements.nodes.concat(element.nodes)
+        elements.edges = elements.edges.concat(element.edges)
 
-          return elements
-        }, { nodes: [], edges: [] }))
+        return elements
+      }, { nodes: [], edges: [] }))
   }, [levels])
 
   const cyRef = useRef()
