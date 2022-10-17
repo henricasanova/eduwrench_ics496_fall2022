@@ -142,16 +142,18 @@ const DisplayInfoV2 = () => {
   // console.log(temp2)
 
   function onChange(event) {
-    const reader = new FileReader()
-    reader.readAsText(event.target.files[0])
-    reader.onload = event => {
-      const jsonData = JSON.parse(event.target.result).workflow.tasks
+    if (event.target.files[0]) {
+      const reader = new FileReader()
+      reader.readAsText(event.target.files[0])
+      reader.onload = event => {
+        const jsonData = JSON.parse(event.target.result).workflow.tasks
 
-      const fileEntries = jsonData.map(node => [node.name, node])
+        const fileEntries = jsonData.map(node => [node.name, node])
 
-      setResult([]) // re-set the result to empty array
-      setFile(Object.fromEntries(fileEntries))
-      setTotalNodes(fileEntries.length)
+        setResult([]) // re-set the result to empty array
+        setFile(Object.fromEntries(fileEntries))
+        setTotalNodes(fileEntries.length)
+      }
     }
   }
 
