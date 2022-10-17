@@ -6,7 +6,7 @@ import popper from 'cytoscape-popper';
 import "./popper.css";
 import { ModuleCytoscapeGraph } from './curriculum_map';
 
-cytoscape.use( popper );
+cytoscape.use(popper);
 
 const ModuleMap = () => {
   const elements = ModuleCytoscapeGraph()
@@ -57,7 +57,7 @@ const ModuleMap = () => {
           x: 261.75,
           y: 1267
         },
-      },{
+      }, {
         data: {
           id: '5',
           label: 'A.3.3',
@@ -67,7 +67,7 @@ const ModuleMap = () => {
           x: 543.5,
           y: 1267
         },
-      },{
+      }, {
         data: {
           id: '6',
           label: 'A.3.4',
@@ -77,7 +77,7 @@ const ModuleMap = () => {
           x: 825.25,
           y: 1267
         },
-      },{
+      }, {
         data: {
           id: '7',
           label: 'C.1',
@@ -210,94 +210,96 @@ const ModuleMap = () => {
     ],
   };
   return (
-        <CytoscapeComponent
-            elements={CytoscapeComponent.normalizeElements(elements)}
-            maxZoom={10}
-            minZoom={0.3}
-            autolock={true}
-            autoungrabify={true}
-            autounselectify={true}
-            boxSelectionEnabled={false}
-            zoomingEnabled={false}
-            cy={(cy) => {
-              const containerStyle = cy.container().style;
-              cy.on('tap', 'node', function(){
-                try {
-                  window.open( this.data('href') );
-                } catch(e){
-                  window.location.href = this.data('href');
-                }
-				      });
-              cy.on('tapstart mouseover', 'node', function(){
-                containerStyle['cursor'] = 'pointer'
-              });
-              cy.on('tapstart mouseout', 'node', function(){
-                containerStyle['cursor'] = 'default'
-              });
-              cy.elements().bind("mouseover", (event) => {
-                if (event.target._private.data.description) {
-                  event.target.popperRefObj = event.target.popper({
-                    content: () => {
-                      let content = document.createElement("div");
+    <CytoscapeComponent
+      elements={CytoscapeComponent.normalizeElements(elements)}
+      maxZoom={10}
+      minZoom={0.3}
+      autolock={true}
+      autoungrabify={true}
+      autounselectify={true}
+      boxSelectionEnabled={false}
+      zoomingEnabled={false}
+      cy={(cy) => {
+        const containerStyle = cy.container().style;
+        cy.on('tap', 'node', function () {
+          try {
+            window.open(this.data('href'));
+          } catch (e) {
+            window.location.href = this.data('href');
+          }
+        });
+        cy.on('tapstart mouseover', 'node', function () {
+          containerStyle['cursor'] = 'pointer'
+        });
+        cy.on('tapstart mouseout', 'node', function () {
+          containerStyle['cursor'] = 'default'
+        });
+        cy.elements().bind("mouseover", (event) => {
+          if (event.target._private.data.description) {
+            event.target.popperRefObj = event.target.popper({
+              content: () => {
+                let content = document.createElement("div");
 
-                      content.classList.add("popper-div");
+                content.classList.add("popper-div");
 
-                      // content.innerHTML = event.target.id();
-                      // console.log("EVENT =");
-                      // console.log(event);
-                      // console.log("EVENT TARGET=");
-                      content.innerHTML = event.target[0]._private.data.description
+                // content.innerHTML = event.target.id();
+                // console.log("EVENT =");
+                // console.log(event);
+                // console.log("EVENT TARGET=");
+                content.innerHTML = event.target[0]._private.data.description
 
-                      document.body.appendChild(content);
-                      return content;
-                    },
-                      renderedPosition: () => ({
-                        x: event.target[0]._private.position.x,
-                        y: (event.target[0]._private.position.y === 800 && event.target[0]._private.position.x === 1000)?
-                            event.target[0]._private.position.y-280: event.target[0]._private.position.y-230
-                      }),
-                  });
-                }
-              });
-              cy.elements().unbind("mouseout");
-              cy.elements().bind("mouseout", (event) => {
-                if (event.target._private.data.description) {
-                  event.target.popperRefObj.state.elements.popper.remove();
-                  event.target.popperRefObj.destroy();
-                }
-              });
-			      }}
-            stylesheet={[
-              {
-                selector: 'node',
-                style: {
-                  'background-color': '#fbbd08',
-                  'color': 'white',
-                  'label': 'data(label)',
-                  'text-wrap': 'wrap',
-                  'text-halign': 'center',
-                  'text-valign': 'center',
-                  'font-size': '10',
-                  'width': '250',
-                  'height': '120',
-                  'shape': 'rectangle'
-                }
+                document.body.appendChild(content);
+                return content;
               },
-              {
-                selector: 'edge',
-                style: {
-                  'width': 3,
-                  'curve-style': 'bezier',
-                  'line-color': '#d38000',
-                  'target-arrow-color': '#d38000',
-                  'target-arrow-shape': 'triangle'
-                }
-              },
-            ]}
+              renderedPosition: () => ({
+                x: event.target[0]._private.position.x,
+                y: (event.target[0]._private.position.y === 800 && event.target[0]._private.position.x === 1000) ?
+                  event.target[0]._private.position.y - 280 : event.target[0]._private.position.y - 230
+              }),
+            });
+          }
+        });
+        cy.elements().unbind("mouseout");
+        cy.elements().bind("mouseout", (event) => {
+          if (event.target._private.data.description) {
+            event.target.popperRefObj.state.elements.popper.remove();
+            event.target.popperRefObj.destroy();
+          }
+        });
+      }}
+      stylesheet={[
+        {
+          selector: 'node',
+          style: {
+            'background-color': '#fbbd08',
+            'color': 'white',
+            'label': 'data(label)',
+            'text-wrap': 'wrap',
+            'text-max-width': '220',
+            "word-wrap": "break-word",
+            'text-halign': 'center',
+            'text-valign': 'center',
+            'font-size': '15',
+            'width': '250',
+            'height': '120',
+            'shape': 'rectangle'
+          }
+        },
+        {
+          selector: 'edge',
+          style: {
+            'width': 3,
+            'curve-style': 'bezier',
+            'line-color': '#d38000',
+            'target-arrow-color': '#d38000',
+            'target-arrow-shape': 'triangle'
+          }
+        },
+      ]}
 
-            style={{ width: '1172px', height: '2000px' }}
+      style={{ width: '1172px', height: '2000px' }}
 
-        />
+    />
   );
 };
 
