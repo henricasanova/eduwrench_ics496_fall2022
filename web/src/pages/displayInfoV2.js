@@ -14,7 +14,7 @@ type Node = {
   runTime: number;
   value: number;
 };
-
+x
 type Level = Array<Node>
 
 const sortNodesOnSameLevel = (level: Level) => level.sort((x: Node, y: Node) => x.runTime < y.runTime)
@@ -129,15 +129,17 @@ const DisplayInfoV2 = () => {
           node.y = hPivot + (height * 100)
         })
       })
-      // till here
+      result.forEach((t, index) => compute(t, index))
 
+      // till here
       setResult([...result])
     }
-    setTemp(result)
-    setIsTrue(true)
+
+    // setTemp(result)
+    // setIsTrue(true)
   }, [file])
 
-  const temp2 = isTrue ? temp.map((t, index) => compute(t, index)) : 'nothing'
+  // const temp2 = isTrue ? temp.map((t, index) => compute(t, index)) : 'nothing'
 
   // console.log(temp2)
 
@@ -169,7 +171,7 @@ const DisplayInfoV2 = () => {
           --------------------------- file content ---------------------------
           <div>Total Task: {totalNodes && totalNodes}</div>
         </Segment>
-        {result.length > 0 && <DisplayCytoscape width={3000} height={temp2.length * 500} levels={temp2} file={file} />}
+        {result.length > 0 && <DisplayCytoscape width={3000} height={result.length * 500} levels={result} file={file} />}
         {
           <Table celled>
             <Table.Header>
