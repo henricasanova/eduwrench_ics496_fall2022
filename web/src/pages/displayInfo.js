@@ -9,20 +9,25 @@ const DisplayInfo = () => {
   const [file, setFile] = useState(false)
   // top level defined array - index is the level
   const [result, setResult] = useState([])
+  //
+  const [tuple, setTuple] = useState([]);
+  //
+  const [ren, setRen] = useState(0)
+  //
+  const [fileObj, setFileObj] = useState(0)
 
   function divideByTopLevel(arr, length) {
-    for (let i = 0; i <= length - 1; i++) {
+    for (let i = 0; i <= length; i++) {
       result.push(file.filter(f => f.topLevel === i))
     }
   }
 
   function swap(A, num1, num2) {
-    let temp = A[num1]
+    let temp2 = A[num1]
     A[num1] = A[num2]
-    A[num2] = temp
+    A[num2] = temp2
   }
 
-  // not use, but maybe later if we need to sort them first
   function partitionJson(array, start, end) {
     let value = array[end]
     let index = start
@@ -36,7 +41,6 @@ const DisplayInfo = () => {
     return index
   }
 
-  // same
   function sortJson(array, start, end) {
     if (start >= end) {
       return
@@ -47,8 +51,7 @@ const DisplayInfo = () => {
   }
 
   function getIndex(parent) {
-    const temp = file.map(f => { return f.name }).indexOf(parent)
-    return temp
+    return file.map(f => { return f.name }).indexOf(parent)
   }
 
   function bottomUp(node) {
@@ -62,7 +65,6 @@ const DisplayInfo = () => {
 
     if (parents.length <= 0) {
       node.topLevel = 0
-      console.log(node.topLevel)
       return node.topLevel
     } else {
       for (let nodeElement of parents) {
@@ -74,6 +76,75 @@ const DisplayInfo = () => {
     file[index].topLevel = 1 + newNodeToCheck.topLevel
   }
 
+  function compute(data) {
+    let length = data.length
+    for (let i = 0; i <= length - 1; i++) {
+      data[i].x = (i + 1) * (3000 / (length + 1))
+      data[i].y = data[i].topLevel * 250
+    }
+  }
+
+  function getParentsXCorr() {
+
+  }
+
+  function computeBasedOnParents(data) {
+    if (data.parents.length <= 0) {
+
+    }
+  }
+
+  function getNodeXAndY(nodeElement) {
+    const newTemp = file.filter((t) => t.name === nodeElement)
+    return newTemp[0]
+  }
+
+  function getSegment(nod) {
+    // console.log(nod)
+    const { children, x, y, name, topLevel } = nod
+    if (nod.children.length <= 0) {
+      return 0;
+    }
+    for (let element of children) {
+      const newTuple = getNodeXAndY(element)
+      tuple.push([{ name, x, y, topLevel }, { name: newTuple.name, xPrime: newTuple.x, yPrime: newTuple.y, topLevel: newTuple.topLevel }])
+    }
+  }
+
+  function isIntersection(a, b, c, d) {
+    const top = (d.x - c.x) * (a.y - c.y) - (d.y - c.y) * (a.x - c.x)
+    const bottom = (d.y - c.y) * (b.x - a.x) - (d.x - c.x) * (b.y - a.y)
+    const point = top / bottom
+    return (point > 0.4) && (point < 0.6)
+  }
+
+  function lineSweep(arr, nodeLength) {
+    let total = 0
+    const newArray = []
+    let checkingArray = []
+    for (let j = 0; j <= nodeLength; j++) {
+      // console.log(j, true)
+      for (let element of arr) {
+        if (element[0].topLevel === j) {
+          // console.log('print if true', element, j)
+          checkingArray.push(element)
+        }
+      }
+      for (const checkingElement of checkingArray) {
+        if (checkingElement[1].topLevel === j) {
+          for (const newElement of checkingArray) {
+            const isIt = isIntersection({ x: checkingElement[0].x, y: checkingElement[0].y }, { x: checkingElement[1].xPrime, y: checkingElement[1].yPrime }, { x: newElement[0].x, y: newElement[0].y }, { x: newElement[1].xPrime, y: newElement[1].yPrime })
+            if (isIt) {
+              total++
+            }
+          }
+          checkingArray.shift()
+        }
+      }
+    }
+    return total
+  }
+
   React.useEffect(() => {
     if (file) {
       const temp = file.filter(task => task.children.length === 0)
@@ -82,95 +153,13 @@ const DisplayInfo = () => {
       const newArray = sortJson(file, 0, file.length - 1)
       const resultLength = file[file.length - 1].topLevel
       divideByTopLevel(file, resultLength)
+      result.map(arr => compute(arr))
+      result.map(r => r.map(newR => getSegment(newR)))
+      setRen(lineSweep(tuple, result.length - 1))
+      setFileObj(Object.fromEntries(file.map(f => [f.name, f])))
     }
   }, [file])
 
-  // React.useEffect(() => {
-  //   if (isTrue) {
-  //     const compute = (data) => {
-  //       let length = 3000 / (data.length * 2)
-  //       let i = length
-  //       for (let element of data) {
-  //         element.x = i
-  //         element.y = element.topLevel * 250
-  //         i += (length * 2)
-  //       }
-  //       return data
-  //     }
-  //     const something = result.map(node => compute(node));
-  //     setOneTrue(true)
-  //   }
-  //   setIsTrue(false)
-  // },[isTrue])
-  //
-  // React.useEffect(() => {
-  //   if (oneTrue) {
-  //     function getNodeXAndY(nodeElement) {
-  //       const newTemp = temp.filter((t) => t.name === nodeElement)
-  //       return newTemp[0]
-  //     }
-  //
-  //     function getSegment(nod) {
-  //       // console.log(nod)
-  //       const { children, x, y, name, topLevel } = nod
-  //       if (nod.children.length <= 0) {
-  //         return 0;
-  //       }
-  //       for (let element of children) {
-  //         const newTuple = getNodeXAndY(element)
-  //         tuple.push([{ name, x, y, topLevel }, { name: newTuple.name, xPrime: newTuple.x, yPrime: newTuple.y, topLevel: newTuple.topLevel }])
-  //       }
-  //     }
-  //     result.forEach(r => r.forEach(newR => getSegment(newR)))
-  //     setIfTrue(true)
-  //   }
-  //   setOneTrue(false)
-  // }, [oneTrue])
-  //
-  // React.useEffect(() => {
-  //   if (ifTrue) {
-  //     // console.log(tuple, 'linesweep')
-  //     function isIntersection(a, b, c, d) {
-  //       const top = (d.x - c.x) * (a.y - c.y) - (d.y - c.y) * (a.x - c.x)
-  //       const bottom = (d.y - c.y) * (b.x - a.x) - (d.x - c.x) * (b.y - a.y)
-  //       const point = top / bottom
-  //       // console.log(point, ((point > 0.4) && (point < 0.6)))
-  //       return (point > 0.4) && (point < 0.6)
-  //     }
-  //
-  //     function lineSweep(arr, nodeLength) {
-  //       const newArray = []
-  //       let checkingArray = []
-  //       for (let j = 0; j <= nodeLength; j++) {
-  //         // console.log(j, true)
-  //         for (let element of arr) {
-  //           if (element[0].topLevel === j) {
-  //             // console.log('print if true', element, j)
-  //             checkingArray.push(element)
-  //           }
-  //         }
-  //         for (const checkingElement of checkingArray) {
-  //           if (checkingElement[1].topLevel === j) {
-  //             for (const newElement of checkingArray) {
-  //               const isIt = isIntersection({ x: checkingElement[0].x, y: checkingElement[0].y }, { x: checkingElement[1].xPrime, y: checkingElement[1].yPrime }, { x: newElement[0].x, y: newElement[0].y }, { x: newElement[1].xPrime, y: newElement[1].yPrime })
-  //               if (isIt) {
-  //                 newArray.push({ segmentA: `${checkingElement[0].name} - ${checkingElement[1].name}`, segmentB: `${newElement[0].name} - ${newElement[1].name}`, intersection: isIt.toString(), j })
-  //               }
-  //             }
-  //             checkingArray.shift()
-  //           }
-  //         }
-  //       }
-  //       return newArray
-  //     }
-  //
-  //     const sweep = lineSweep(tuple, result.length - 1)
-  //     setRenderArray(sweep)
-  //   }
-  //   setIfTrue(false)
-  // }, [ifTrue])
-
-  console.log(file, result)
   function onChange(event) {
     const reader = new FileReader()
     reader.readAsText(event.target.files[0])
@@ -182,14 +171,13 @@ const DisplayInfo = () => {
           topLevel: 0
         }
       })
-      console.log(jsonData)
       setFile(jsonData)
-      console.log(file, 'onchange')
       // const fileEntries = jsonData.map(node => [node.name, node])
       // setResult([]) // re-set the result to empty array
     }
   }
 
+  console.log(ren)
 
   return (
     <Layout>
@@ -202,6 +190,51 @@ const DisplayInfo = () => {
           </div>
           --------------------------- file content ---------------------------
         </Segment>
+        {result.length > 0 && <DisplayCytoscape width={3000} height={result.length * 500} levels={result} file={fileObj} />}
+        {
+          <Table celled>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>Name</Table.HeaderCell>
+                <Table.HeaderCell>Children</Table.HeaderCell>
+                <Table.HeaderCell>Parents</Table.HeaderCell>
+                <Table.HeaderCell>
+                  Top Level
+                </Table.HeaderCell>
+                <Table.HeaderCell>
+                  Runtime
+                </Table.HeaderCell>
+                <Table.HeaderCell>
+                  Memory
+                </Table.HeaderCell>
+                <Table.HeaderCell>
+                  AvgCPU
+                </Table.HeaderCell>
+                <Table.HeaderCell>
+                  BytesRead
+                </Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+            {result.length > 0 ? (
+              <Table.Body>
+                {result.map(level =>
+                  level.map(node => (
+                    <Table.Row key={node.name}>
+                      <Table.Cell>{node.name}</Table.Cell>
+                      <Table.Cell>{node.children.length}</Table.Cell>
+                      <Table.Cell>{node.parents.length}</Table.Cell>
+                      <Table.Cell>{node.topLevel}</Table.Cell>
+                      <Table.Cell>{node.runtime}</Table.Cell>
+                      <Table.Cell>{node.memory}</Table.Cell>
+                      <Table.Cell>{node.avgCPU}</Table.Cell>
+                      <Table.Cell>{node.bytesRead}</Table.Cell>
+                    </Table.Row>
+                  ))
+                )}
+              </Table.Body>
+            ) : null}
+          </Table>
+        }
       </Container>
     </Layout>
   )
