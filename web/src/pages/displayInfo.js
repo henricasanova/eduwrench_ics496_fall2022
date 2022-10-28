@@ -77,6 +77,7 @@ const DisplayInfo = () => {
   }
 
   function compute(data) {
+    console.log(data, data.length)
     let length = data.length
     for (let i = 0; i <= length - 1; i++) {
       data[i].x = (i + 1) * (3000 / (length + 1))
@@ -84,13 +85,30 @@ const DisplayInfo = () => {
     }
   }
 
-  function getParentsXCorr() {
-
+  function getParentsXCorr(nodeName) {
+    const index = getIndex(nodeName)
+    const { x } = file[index]
+    return x
   }
 
   function computeBasedOnParents(data) {
-    if (data.parents.length <= 0) {
-
+    console.log(data)
+    let length = data.length
+    for (let i = 0; i <= length - 1; i++) {
+      if (data[i].parents.length <= 0) {
+        break;
+      }
+      let newCorr = 0
+      const { parents } = data[i]
+      console.log(parents)
+      for (let element of parents) {
+        console.log(getParentsXCorr(element))
+        newCorr += getParentsXCorr(element)
+      }
+      console.log(i)
+      data[i].x = (newCorr / parents.length)
+      data[i].y = data[i].topLevel * 250
+      console.log(data[i])
     }
   }
 
@@ -153,7 +171,9 @@ const DisplayInfo = () => {
       const newArray = sortJson(file, 0, file.length - 1)
       const resultLength = file[file.length - 1].topLevel
       divideByTopLevel(file, resultLength)
+      console.log(result)
       result.map(arr => compute(arr))
+      result.map(arr => computeBasedOnParents(arr))
       result.map(r => r.map(newR => getSegment(newR)))
       setRen(lineSweep(tuple, result.length - 1))
       setFileObj(Object.fromEntries(file.map(f => [f.name, f])))
