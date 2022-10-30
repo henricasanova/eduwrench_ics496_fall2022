@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react"
 import { useRef } from "react"
 import CytoscapeComponent from "react-cytoscapejs"
+import cytoscape from 'cytoscape';
+import popper from 'cytoscape-popper';
+import "./popper.css";
+
+cytoscape.use( popper );
 
 const DisplayCytoscape = ({ width, height, levels, file }) => {
   // console.log(width, height, levels, file)
@@ -13,10 +18,10 @@ const DisplayCytoscape = ({ width, height, levels, file }) => {
 
       const element = nodes.reduce((element, node) => {
 
-        const { id, name: label, x, y } = node
+        const { id, name: label, avgCPU, runtime, bytesRead, memory, x, y } = node
 
         element.nodes.push({
-          data: { id, label },
+          data: { id, label, avgCPU, runtime, bytesRead, memory },
           position: { x, y },
         })
 
@@ -76,7 +81,35 @@ const DisplayCytoscape = ({ width, height, levels, file }) => {
         elements={CytoscapeComponent.normalizeElements(elements)}
         maxZoom={10}
         minZoom={0.2}
-        cy={cy => (cyRef.current = cy)}
+        //cy={cy => (cyRef.current = cy)}
+        cy={(cy) => {
+          cy.elements().bind("mouseover", (event) => {
+            if (event.target._private.data.avgCPU) {
+              event.target.popperRefObj = event.target.popper({
+                content: () => {
+                  let content = document.createElement("div");
+
+                  content.classList.add("popper-div-json");
+
+                  content.innerHTML = "Avg CPU: " + event.target[0]._private.data.avgCPU +
+                      "<br />Runtime: " + event.target[0]._private.data.runtime +
+                      "<br />Bytes Read: " + event.target[0]._private.data.bytesRead +
+                      "<br />Memory: " + event.target[0]._private.data.memory
+
+                  document.body.appendChild(content);
+                  return content;
+                },
+              });
+            }
+          });
+          cy.elements().unbind("mouseout");
+          cy.elements().bind("mouseout", (event) => {
+            if (event.target._private.data.avgCPU) {
+              event.target.popperRefObj.state.elements.popper.remove();
+              event.target.popperRefObj.destroy();
+            }
+          });
+        }}
         stylesheet={[
           {
             selector: "node",
