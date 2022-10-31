@@ -214,11 +214,14 @@ const ModuleMap = () => {
       elements={CytoscapeComponent.normalizeElements(elements)}
       maxZoom={10}
       minZoom={0.3}
+      zoom={0.9}
       autolock={true}
       autoungrabify={true}
       autounselectify={true}
       boxSelectionEnabled={false}
       zoomingEnabled={false}
+      panningEnabled={false}
+      pan={{ x: 100, y: 0 }}
       cy={(cy) => {
         const containerStyle = cy.container().style;
         cy.on('tap', 'node', function () {
@@ -251,11 +254,12 @@ const ModuleMap = () => {
                 document.body.appendChild(content);
                 return content;
               },
-              renderedPosition: () => ({
+              renderedPosition: () => {
+                return{
                 x: event.target[0]._private.position.x,
                 y: (event.target[0]._private.position.y === 800 && event.target[0]._private.position.x === 1000) ?
-                  event.target[0]._private.position.y - 280 : event.target[0]._private.position.y - 230
-              }),
+                  event.target[0]._private.position.y - 385 : event.target[0]._private.position.y - 230 -  event.target[0]._private.position.y / 10
+              }},
             });
           }
         });
@@ -271,7 +275,7 @@ const ModuleMap = () => {
         {
           selector: 'node',
           style: {
-            'background-color': '#fbbd08',
+            'background-color': '#F5B971',
             'color': 'white',
             'label': 'data(label)',
             'text-wrap': 'wrap',
@@ -279,10 +283,17 @@ const ModuleMap = () => {
             "word-wrap": "break-word",
             'text-halign': 'center',
             'text-valign': 'center',
-            'font-size': '15',
+            'font-size': '18',
+            'font-weight': '500',
             'width': '250',
             'height': '120',
-            'shape': 'rectangle'
+            'shape': 'roundrectangle',
+            "text-outline-color": "#d38000",
+            "text-outline-width": "1px",
+            'background-fit': 'cover',
+            'border-color': '#8D1E00',
+            'border-width': 1,
+            'border-opacity': 0.5
           }
         },
         {
