@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '../components/layout';
 import PageHeader from '../components/page_header';
-import { Container, Segment, Table } from 'semantic-ui-react';
+import { Container, Segment, Table, Form } from 'semantic-ui-react';
 import DisplayCytoscape from '../components/display_cytoscape';
 
 const DisplayInfo = () => {
@@ -15,6 +15,46 @@ const DisplayInfo = () => {
   const [ren, setRen] = useState(0)
   //
   const [fileObj, setFileObj] = useState(0)
+  const [isTrue, setIsTrue] = useState(0)
+
+  function checkCurrLevel(event) {
+    let time = parseInt(event, 10)
+    time *= 1000
+    let newResult = result
+    const getLevels = newResult.map((arr, index) => { if (arr.length >= 2) return index }).filter(r => r !== undefined)
+    const length = getLevels[Math.floor(Math.random() * getLevels.length)]
+    const randomizeCurrLevel = Math.floor(Math.random() * length) + 2
+    console.log('randomingzing:', result[6]);
+   const interval = setInterval(randomSwap, 2, newResult[6])
+
+    function swapNode(A, num1, num2) {
+      if (A[num1].name === A[num2].name){
+        return 0;
+      }
+      let temp2 = A[num1].x
+      A[num1].x = A[num2].x
+      A[num2].x = temp2
+    }
+
+    function randomSwap(currLevel) {
+      const currLength = currLevel.length
+      const num1 = Math.floor(Math.random() * currLength)
+      const num2 = Math.floor(Math.random() * currLength)
+      swapNode(currLevel, num1, num2)
+    }
+    setTimeout(() => {
+      clearInterval(interval)
+      setFileObj(false)
+      setResult(newResult)
+      setTuple([])
+      result.map(r => r.map(newR => getSegment(newR)))
+      setRen(lineSweep(tuple, result.length - 1))
+      setFileObj(Object.fromEntries(result.flat().map(f => [f.name, f])))
+      console.log(fileObj)
+    }, time)
+
+
+  }
 
   function divideByTopLevel(arr, length) {
     for (let i = 0; i <= length; i++) {
@@ -77,7 +117,6 @@ const DisplayInfo = () => {
   }
 
   function compute(data) {
-    console.log(data, data.length)
     let length = data.length
     for (let i = 0; i <= length - 1; i++) {
       data[i].x = (i + 1) * (3000 / (length + 1))
@@ -92,7 +131,6 @@ const DisplayInfo = () => {
   }
 
   function computeBasedOnParents(data) {
-    console.log(data)
     let length = data.length
     for (let i = 0; i <= length - 1; i++) {
       if (data[i].parents.length <= 0) {
@@ -100,15 +138,10 @@ const DisplayInfo = () => {
       }
       let newCorr = 0
       const { parents } = data[i]
-      console.log(parents)
       for (let element of parents) {
-        console.log(getParentsXCorr(element))
         newCorr += getParentsXCorr(element)
       }
-      console.log(i)
-      data[i].x = (newCorr / parents.length)
-      data[i].y = data[i].topLevel * 250
-      console.log(data[i])
+      data[i].x = newCorr / parents.length
     }
   }
 
@@ -151,7 +184,10 @@ const DisplayInfo = () => {
       for (const checkingElement of checkingArray) {
         if (checkingElement[1].topLevel === j) {
           for (const newElement of checkingArray) {
-            const isIt = isIntersection({ x: checkingElement[0].x, y: checkingElement[0].y }, { x: checkingElement[1].xPrime, y: checkingElement[1].yPrime }, { x: newElement[0].x, y: newElement[0].y }, { x: newElement[1].xPrime, y: newElement[1].yPrime })
+            const isIt = isIntersection({ x: checkingElement[0].x, y: checkingElement[0].y }, { x: checkingElement[1].xPrime, y: checkingElement[1].yPrime }, { x: newElement[0].x, y: newElement[0].y }, {
+              x: newElement[1].xPrime,
+              y: newElement[1].yPrime
+            })
             if (isIt) {
               total++
             }
@@ -164,23 +200,23 @@ const DisplayInfo = () => {
   }
 
   React.useEffect(() => {
-    if (file) {
+    if (isTrue) {
       const temp = file.filter(task => task.children.length === 0)
       // console.log(temp, file, 'firstEffect')
       temp.map(t => bottomUp(t))
       const newArray = sortJson(file, 0, file.length - 1)
       const resultLength = file[file.length - 1].topLevel
       divideByTopLevel(file, resultLength)
-      console.log(result)
       result.map(arr => compute(arr))
-      result.map(arr => computeBasedOnParents(arr))
+      // result.map(arr => computeBasedOnParents(arr))
       result.map(r => r.map(newR => getSegment(newR)))
       setRen(lineSweep(tuple, result.length - 1))
       setFileObj(Object.fromEntries(file.map(f => [f.name, f])))
     }
-  }, [file])
+  }, [isTrue])
 
   function onChange(event) {
+    setIsTrue(false);
     const reader = new FileReader()
     reader.readAsText(event.target.files[0])
     reader.onload = event => {
@@ -192,6 +228,7 @@ const DisplayInfo = () => {
         }
       })
       setFile(jsonData)
+      setIsTrue(true)
       // const fileEntries = jsonData.map(node => [node.name, node])
       // setResult([]) // re-set the result to empty array
     }
@@ -210,7 +247,13 @@ const DisplayInfo = () => {
           </div>
           --------------------------- file content ---------------------------
         </Segment>
-        {result.length > 0 && <DisplayCytoscape width={3000} height={result.length * 500} levels={result} file={fileObj} />}
+        <Segment>
+          <Form onSubmit={(event) => checkCurrLevel(event.target[0].value)}>
+            <Form.Input label={'number'}/>
+            <Form.Button content={'Submit'}/>
+          </Form>
+        </Segment>
+        {result.length > 0 && <DisplayCytoscape width={3000} height={result.length * 500} levels={result} file={fileObj} isTrue={fileObj ? true : fileObj}/>}
         {
           <Table celled>
             <Table.Header>
