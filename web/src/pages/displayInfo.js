@@ -115,6 +115,8 @@ const DisplayInfo = () => {
       for (let nodeElement of parents) {
         const newIndex = getIndex(nodeElement)
         newNodeToCheck = file[newIndex]
+        if (!newNodeToCheck.children) newNodeToCheck.children = []
+        if (!newNodeToCheck.children.find(child => child === name)) newNodeToCheck.children.push(name)
         file[index].topLevel = 1 + bottomUp(newNodeToCheck)
       }
     }
@@ -209,7 +211,10 @@ const DisplayInfo = () => {
 
   React.useEffect(() => {
     if (isTrue) {
-      const temp = file.filter(task => task.children.length === 0)
+      const temp = file.filter(task => {
+        if (task.children === undefined) task.children = []
+        if (task.children.length === 0) return task
+      })
       // console.log(temp, file, 'firstEffect')
       temp.map(t => bottomUp(t))
       const newArray = sortJson(file, 0, file.length - 1)
@@ -224,21 +229,23 @@ const DisplayInfo = () => {
   }, [isTrue])
 
   function onChange(event) {
-    setIsTrue(false);
-    const reader = new FileReader()
-    reader.readAsText(event.target.files[0])
-    reader.onload = event => {
-      const jsonData = JSON.parse(event.target.result).workflow.tasks.map(task => {
-        return {
-          name: task.name, type: task.type, runtime: task.runtime, parents: task.parents, children: task.children, files: task.files, cores: task.cores, avgCPU: task.avgCPU,
-          bytesRead: task.bytesRead, bytesWritten: task.bytesWritten, memory: task.memory, machine: task.machine, id: task.id, category: task.category, command: task.command,
-          topLevel: 0
-        }
-      })
-      setFile(jsonData)
-      setIsTrue(true)
-      // const fileEntries = jsonData.map(node => [node.name, node])
-      // setResult([]) // re-set the result to empty array
+    if (event.target.files[0]) {
+      setIsTrue(false);
+      const reader = new FileReader()
+      reader.readAsText(event.target.files[0])
+      reader.onload = event => {
+        const jsonData = JSON.parse(event.target.result).workflow.tasks.map(task => {
+          return {
+            name: task.name, type: task.type, runtime: task.runtime, parents: task.parents, children: task.children, files: task.files, cores: task.cores, avgCPU: task.avgCPU,
+            bytesRead: task.bytesRead, bytesWritten: task.bytesWritten, memory: task.memory, machine: task.machine, id: task.id, category: task.category, command: task.command,
+            topLevel: 0
+          }
+        })
+        setFile(jsonData)
+        setIsTrue(true)
+        // const fileEntries = jsonData.map(node => [node.name, node])
+        // setResult([]) // re-set the result to empty array
+      }
     }
   }
 
