@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import Layout from '../components/layout';
-import PageHeader from '../components/page_header';
-import { Container, Segment, Table, Form } from 'semantic-ui-react';
-import DisplayCytoscape from '../components/display_cytoscape';
+import React, { useState } from 'react'
+import Layout from '../components/layout'
+import PageHeader from '../components/page_header'
+import { Container, Segment, Table, Form } from 'semantic-ui-react'
+import DisplayCytoscape from '../components/display_cytoscape'
 
 const DisplayInfo = () => {
   // raw file data
@@ -19,16 +19,12 @@ const DisplayInfo = () => {
 
   function checkCurrLevel(event) {
     let time = parseInt(event, 10)
-    time *= 1000
-    let newResult = result
-    const getLevels = newResult.map((arr, index) => { if (arr.length >= 2) return index }).filter(r => r !== undefined)
-    const length = getLevels[Math.floor(Math.random() * getLevels.length)]
-    const randomizeCurrLevel = Math.floor(Math.random() * length) + 2
-    console.log('randomingzing:', result[6]);
-   const interval = setInterval(randomSwap, 2, newResult[6])
+    let timeOut = time * 1000
+    const newResult = result
+    const interval = setInterval(randomSwap, time, result)
 
     function swapNode(A, num1, num2) {
-      if (A[num1].name === A[num2].name){
+      if (A[num1].name === A[num2].name) {
         return 0;
       }
       let temp2 = A[num1].x
@@ -36,22 +32,31 @@ const DisplayInfo = () => {
       A[num2].x = temp2
     }
 
-    function randomSwap(currLevel) {
-      const currLength = currLevel.length
+    function randomSwap(node) {
+      let checkRen = 0
+      const rand = Math.floor(Math.random() * (node.length - 1 - 0) + 0)
+      let curr = node[rand]
+      const currLength = curr.length
       const num1 = Math.floor(Math.random() * currLength)
       const num2 = Math.floor(Math.random() * currLength)
-      swapNode(currLevel, num1, num2)
+      swapNode(curr, num1, num2)
+      setTuple([])
+      node.map(r => r.map(newR => getSegment(newR)))
+      console.log(node)
+      checkRen = lineSweep(tuple, result.length - 1)
+      console.log(checkRen)
+      if (checkRen < ren) {
+        setResult(node)
+        setRen(checkRen)
+      }
     }
+
     setTimeout(() => {
       clearInterval(interval)
       setFileObj(false)
-      setResult(newResult)
-      setTuple([])
-      result.map(r => r.map(newR => getSegment(newR)))
-      setRen(lineSweep(tuple, result.length - 1))
+      console.log(newResult, result)
       setFileObj(Object.fromEntries(result.flat().map(f => [f.name, f])))
-      console.log(fileObj)
-    }, time)
+    }, timeOut)
 
 
   }
@@ -133,8 +138,8 @@ const DisplayInfo = () => {
   function computeBasedOnParents(data) {
     let length = data.length
     for (let i = 0; i <= length - 1; i++) {
-      if (data[i].parents.length <= 0) {
-        break;
+      if (data[i].x) {
+        return
       }
       let newCorr = 0
       const { parents } = data[i]
@@ -143,6 +148,10 @@ const DisplayInfo = () => {
       }
       data[i].x = newCorr / parents.length
     }
+    data.sort(function (a, b) {
+      return a.x < b.x
+    })
+    compute(data)
   }
 
   function getNodeXAndY(nodeElement) {
@@ -171,7 +180,6 @@ const DisplayInfo = () => {
 
   function lineSweep(arr, nodeLength) {
     let total = 0
-    const newArray = []
     let checkingArray = []
     for (let j = 0; j <= nodeLength; j++) {
       // console.log(j, true)
@@ -207,8 +215,8 @@ const DisplayInfo = () => {
       const newArray = sortJson(file, 0, file.length - 1)
       const resultLength = file[file.length - 1].topLevel
       divideByTopLevel(file, resultLength)
-      result.map(arr => compute(arr))
-      // result.map(arr => computeBasedOnParents(arr))
+      compute(result[0])
+      result.map(arr => computeBasedOnParents(arr))
       result.map(r => r.map(newR => getSegment(newR)))
       setRen(lineSweep(tuple, result.length - 1))
       setFileObj(Object.fromEntries(file.map(f => [f.name, f])))
