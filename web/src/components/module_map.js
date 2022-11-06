@@ -237,6 +237,7 @@ const ModuleMap = () => {
         cy.on('tapstart mouseout', 'node', function () {
           containerStyle['cursor'] = 'default'
         });
+        cy.elements().unbind("mouseover");
         cy.elements().bind("mouseover", (event) => {
           if (event.target._private.data.description) {
             event.target.popperRefObj = event.target.popper({

@@ -81,6 +81,7 @@ const DisplayCytoscape = ({ width, height, levels, file, isTrue }) => {
         minZoom={0.2}
         //cy={cy => (cyRef.current = cy)}
         cy={(cy) => {
+          cy.elements().unbind("mouseover");
           cy.elements().bind("mouseover", (event) => {
             if (event.target._private.data.avgCPU) {
               event.target.popperRefObj = event.target.popper({
