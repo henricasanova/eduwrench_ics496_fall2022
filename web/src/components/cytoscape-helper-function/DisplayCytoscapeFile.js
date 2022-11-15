@@ -1,18 +1,23 @@
-import React, { useEffect, useState } from "react"
-import { useRef } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import CytoscapeComponent from "react-cytoscapejs"
 import cytoscape from 'cytoscape';
 import popper from 'cytoscape-popper';
-import "./popper.css";
+import "../popper.css";
+import { LineSweep } from './LineSweep';
+import { SortNodeArray } from './SortNodeArray';
+import { Form, Segment } from 'semantic-ui-react';
 
 cytoscape.use( popper );
 
-const DisplayCytoscape = ({ width, height, levels, file, isTrue }) => {
+const DisplayCytoscapeFile = ({ width, height, levels, file, arrayLength, totalIntersection }) => {
+  console.log(totalIntersection)
   // console.log(width, height, levels, file)
   const [elements, setElements] = useState({ nodes: [], edges: [] })
+  const [newResult, setNewResult] = useState(0)
+  const [newObjFile, setNewObjFile] = useState(0)
 
   useEffect(() => {
-    if (levels) {
+    if (levels.length > 0) {
       const fileById = Object.fromEntries(Object.entries(file).map(([key, value]) => [value.id, value]))
 
       const elements = levels.reduce((elements, nodes) => {
@@ -54,26 +59,111 @@ const DisplayCytoscape = ({ width, height, levels, file, isTrue }) => {
         const currentTargetNode = fileById[edge.data.target]
 
         elements.edges.filter(otherEdge => {
-
           const sourceNode = fileById[otherEdge.data.source]
           const targetNode = fileById[otherEdge.data.target]
-
-          if (currentSourceNode.topLevel === sourceNode.topLevel && ((currentSourceNode.x < sourceNode.x && currentTargetNode.x > targetNode.x) || (currentSourceNode.x > sourceNode.x && currentTargetNode.x < targetNode.x))) {
-            currentSourceNode.intersect = currentSourceNode.intersect === undefined ? 1 : currentSourceNode.intersect + 1
-          }
         })
       })
-      // const taskNodes = Object.values(file)
-      /* taskNodes.forEach(task => {
-        console.log('# of children: ' + task.children.length)
-      }) */
       setElements(elements)
     }
   }, [levels])
 
+  useEffect(() => {
+    if (newResult.length > 0) {
+      const fileById = Object.fromEntries(Object.entries(newObjFile).map(([key, value]) => [value.id, value]))
+
+      const elements = levels.reduce((elements, nodes) => {
+
+        const element = nodes.reduce((element, node) => {
+
+          const { id, name: label, avgCPU, runtime, bytesRead, memory, x, y } = node
+
+          element.nodes.push({
+            data: { id, label, avgCPU, runtime, bytesRead, memory },
+            position: { x, y },
+          })
+
+          const edges = node.children.length > 0 ? node.children.map(childName => {
+            const { id: childId } = file[childName]
+
+            return {
+              data: {
+                source: id,
+                target: childId,
+                label: childName,
+              }
+            }
+          }) : []
+
+          element.edges = element.edges.concat(edges)
+
+          return element
+        }, { nodes: [], edges: [] })
+
+        elements.nodes = elements.nodes.concat(element.nodes)
+        elements.edges = elements.edges.concat(element.edges)
+
+        return elements
+      }, { nodes: [], edges: [] })
+
+      elements.edges.forEach(edge => {
+        const currentSourceNode = fileById[edge.data.source]
+        const currentTargetNode = fileById[edge.data.target]
+
+        elements.edges.filter(otherEdge => {
+          const sourceNode = fileById[otherEdge.data.source]
+          const targetNode = fileById[otherEdge.data.target]
+        })
+      })
+      setElements(elements)
+    }
+  }, [newResult])
+
+  function checkCurrLevel(event) {
+    let totalInt = totalIntersection
+    let time = parseInt(event, 10)
+    let timeOut = time * 1000
+    const interval = setInterval(randomSwap, time, levels)
+
+    function swapNode(A, num1, num2) {
+      if (A[num1].name === A[num2].name) {
+        return 0;
+      }
+      let temp2 = A[num1].x
+      A[num1].x = A[num2].x
+      A[num2].x = temp2
+    }
+
+    function randomSwap(node) {
+      const rand = Math.floor(Math.random() * (node.length - 1 - 0) + 0)
+      let curr = node[rand]
+      const currLength = curr.length
+      const num1 = Math.floor(Math.random() * currLength)
+      const num2 = Math.floor(Math.random() * currLength)
+      swapNode(curr, num1, num2)
+      const  newTotal = LineSweep({ resultLength: arrayLength, jsonData: node.flat() });
+      console.log(newTotal, totalInt)
+      if (newTotal < totalInt) {
+        totalInt = newTotal
+        setNewResult([])
+        setNewResult(node)
+        setNewObjFile(Object.fromEntries(node.flat().map(arr => [arr.name, arr])))
+      }
+    }
+
+    setTimeout(() => {
+      clearInterval(interval)
+    }, timeOut)
+  }
+
   const cyRef = useRef()
   return (
     <>
+      <Segment>
+        <Form onSubmit={(event) => checkCurrLevel(event.target[0].value)}>
+          <Form.Input label={'number'}/>
+          <Form.Button content={'Submit'}/>
+        </Form>
+      </Segment>
       <h1>Json Cytoscape Component</h1>
       <CytoscapeComponent
         elements={CytoscapeComponent.normalizeElements(elements)}
@@ -140,4 +230,4 @@ const DisplayCytoscape = ({ width, height, levels, file, isTrue }) => {
   )
 }
 
-export default DisplayCytoscape
+export default DisplayCytoscapeFile

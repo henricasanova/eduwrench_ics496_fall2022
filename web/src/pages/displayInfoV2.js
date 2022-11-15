@@ -6,51 +6,6 @@ import { useState } from "react"
 import JsonCytoscape from "../components/display_cytoscape"
 import DisplayCytoscape from '../components/display_cytoscape';
 
-/*
-type Node = {
-  parents: Array<Node>;
-  children: Array<Node>;
-  topLevel: number;
-  runTime: number;
-  value: number;
-};
-x
-type Level = Array<Node>
-
-const sortNodesOnSameLevel = (level: Level) => level.sort((x: Node, y: Node) => x.runTime < y.runTime)
-
-const addNodesInLevelsDictionary = (nodes: Array<Node>) => {
-  nodes.reduce((dictionary: Array<Level>, node: Node) => {
-    if(dictionary[node.topLevel]) dictionary[node.topLevel] = []
-    dictionary[node.topLevel].push(node)
-    return dictionary
-  }, [])
-}
-
-function myParentsAvgRuntime(currentNode: Node) {
-  return currentNode.parents.reduce((prev, curr): number => {
-    prev += curr.value
-    return prev / currentNode.parents.length
-  }, 0)
-}
-
-function myParentsAvgRuntime(currentNode) {
-  return currentNode.parents.reduce((prev, curr) => {
-    prev += curr.value
-    return prev / currentNode.parents.length
-  }, 0)
-}
-
-const addNodesInLevelsDictionary = nodes => {
-  return nodes.reduce((dictionary, node) => {
-    if (!dictionary[node.topLevel]) dictionary[node.topLevel] = []
-    dictionary[node.topLevel].push(node)
-    console.log(dictionary)
-    return dictionary
-  }, [])
-}
- */
-
 const bottomUpLevel = (nodesObj, nodeName, partition) => {
   const node = nodesObj[nodeName]
   if (nodesObj[node.name].hasOwnProperty("topLevel"))
