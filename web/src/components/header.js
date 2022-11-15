@@ -70,10 +70,6 @@ const Header = props => {
           <Menu.Item href="/displayInfo" className="menu-item">
             Display JSON
           </Menu.Item>
-          
-          <Menu.Item href="/displayInfoV2" className="menu-item">
-            Display JSON v2
-          </Menu.Item>
 
           <Auth />
 
