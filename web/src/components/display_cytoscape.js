@@ -14,6 +14,7 @@ const DisplayCytoscape = ({ width, height, levels, file, isTrue }) => {
   useEffect(() => {
     if (levels) {
       const fileById = Object.fromEntries(Object.entries(file).map(([key, value]) => [value.id, value]))
+      console.log(fileById)
 
       const elements = levels.reduce((elements, nodes) => {
 
