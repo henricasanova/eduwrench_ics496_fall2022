@@ -3,17 +3,14 @@ import CytoscapeComponent from "react-cytoscapejs"
 import cytoscape from 'cytoscape';
 import popper from 'cytoscape-popper';
 import "../popper.css";
-import { LineSweep } from './LineSweep';
-import { SortNodeArray } from './SortNodeArray';
 import { Form, Segment } from 'semantic-ui-react';
 
-cytoscape.use( popper );
+cytoscape.use(popper);
 
-const DisplayCytoscapeFile = ({ width, height, levels, file, test }) => {
+const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, intersection }) => {
   const [elements, setElements] = useState({ nodes: [], edges: [] })
-  console.log(levels, file)
   useEffect(() => {
-    if (levels.length > 0) {
+    if (isTrue) {
       const fileById = Object.fromEntries(Object.entries(file).map(([key, value]) => [value.id, value]))
 
       const elements = levels.reduce((elements, nodes) => {
@@ -23,7 +20,7 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test }) => {
           const { id, name: label, avgCPU, runtime, bytesRead, memory, x, y } = node
 
           element.nodes.push({
-            data: { id, label, avgCPU, runtime, bytesRead, memory },
+            data: { id, label, avgCPU, runtime, bytesRead, memory, x, y },
             position: { x, y },
           })
 
@@ -60,8 +57,63 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test }) => {
         })
       })
       setElements(elements)
+      console.log(levels, file, intersection)
     }
-  }, [levels])
+  }, [isTrue])
+
+  useEffect(() => {
+    if (test) {
+      console.log(test)
+      const fileById = Object.fromEntries(Object.entries(file).map(([key, value]) => [value.id, value]))
+
+      const elements = levels.reduce((elements, nodes) => {
+
+        const element = nodes.reduce((element, node) => {
+
+          const { id, name: label, avgCPU, runtime, bytesRead, memory, x, y } = node
+
+          element.nodes.push({
+            data: { id, label, avgCPU, runtime, bytesRead, memory, x, y },
+            position: { x, y },
+          })
+
+          const edges = node.children.length > 0 ? node.children.map(childName => {
+
+            const { id: childId } = file[childName]
+
+            return {
+              data: {
+                source: id,
+                target: childId,
+                label: childName,
+              }
+            }
+          }) : []
+
+          element.edges = element.edges.concat(edges)
+
+          return element
+        }, { nodes: [], edges: [] })
+
+        elements.nodes = elements.nodes.concat(element.nodes)
+        elements.edges = elements.edges.concat(element.edges)
+
+        return elements
+      }, { nodes: [], edges: [] })
+
+      elements.edges.forEach(edge => {
+        const currentSourceNode = fileById[edge.data.source]
+        const currentTargetNode = fileById[edge.data.target]
+
+        elements.edges.filter(otherEdge => {
+          const sourceNode = fileById[otherEdge.data.source]
+          const targetNode = fileById[otherEdge.data.target]
+        })
+      })
+      setElements(elements)
+      console.log('updated', levels, file, intersection)
+    }
+  }, [test])
 
   const cyRef = useRef()
   return (
@@ -83,9 +135,11 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test }) => {
                   content.classList.add("popper-div-json");
 
                   content.innerHTML = "Avg CPU: " + event.target[0]._private.data.avgCPU +
-                      "<br />Runtime: " + event.target[0]._private.data.runtime +
-                      "<br />Bytes Read: " + event.target[0]._private.data.bytesRead +
-                      "<br />Memory: " + event.target[0]._private.data.memory
+                    "<br />Runtime: " + event.target[0]._private.data.runtime +
+                    "<br />Bytes Read: " + event.target[0]._private.data.bytesRead +
+                    "<br />Memory: " + event.target[0]._private.data.memory +
+                    "<br />X: " + event.target[0]._private.data.x +
+                    "<br />Y: " + event.target[0]._private.data.y
 
                   document.body.appendChild(content);
                   return content;

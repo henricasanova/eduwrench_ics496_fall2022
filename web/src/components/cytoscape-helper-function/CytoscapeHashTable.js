@@ -3,9 +3,6 @@ export default class CytoscapeHashTable {
     this.values = {}
     this.bottomValue = []
     this.valueArray = []
-    this.totalIntersection = 0
-    this.tuple = []
-    this.valueArrayLength = 0
   }
 
   calculateHash(key) {
@@ -51,12 +48,6 @@ export default class CytoscapeHashTable {
     this.valueArray.map(arr => this.computeBasedOnParents(arr, sortedArray))
     this.valueArrayLength = this.valueArray.length
     return this.valueArray
-  }
-
-  getTotalIntersection() {
-    this.getSegment()
-    this.lineSweep()
-    return this.totalIntersection
   }
 
   divideByTopLevel(arr, length) {
@@ -135,52 +126,5 @@ export default class CytoscapeHashTable {
     this.sortJson(array, start, q - 1)
     this.sortJson(array, q + 1, end)
     return array
-  }
-
-  getSegment() {
-    this.valueArray.flat().forEach(r => {
-      const { children, x, y, name, topLevel } = r
-      if (children.length <= 0) {
-        return 0;
-      }
-      for (let element of children) {
-        const newTuple = this.values[element]
-        this.tuple.push([{ x, y, topLevel }, { xPrime: newTuple.x, yPrime: newTuple.y, topLevel: newTuple.topLevel }])
-      }
-    })
-  }
-
-  lineSweep() {
-    let checkingArray = []
-    for (let j = 0; j <= this.valueArrayLength ; j++) {
-      // console.log(j, true)
-      for (let element of this.tuple) {
-        if (element[0].topLevel === j) {
-          // console.log('print if true', element, j)
-          checkingArray.push(element)
-        }
-      }
-      for (const checkingElement of checkingArray) {
-        if (checkingElement[1].topLevel === j) {
-          for (const newElement of checkingArray) {
-            const isIt = this.isIntersection({ x: checkingElement[0].x, y: checkingElement[0].y }, { x: checkingElement[1].xPrime, y: checkingElement[1].yPrime }, { x: newElement[0].x, y: newElement[0].y }, {
-              x: newElement[1].xPrime,
-              y: newElement[1].yPrime
-            })
-            if (isIt) {
-              this.totalIntersection++
-            }
-          }
-          checkingArray.shift()
-        }
-      }
-    }
-  }
-
-  isIntersection(a, b, c, d) {
-    const top = (d.x - c.x) * (a.y - c.y) - (d.y - c.y) * (a.x - c.x)
-    const bottom = (d.y - c.y) * (b.x - a.x) - (d.x - c.x) * (b.y - a.y)
-    const point = top / bottom
-    return (point > 0.4) && (point < 0.6)
   }
 }
