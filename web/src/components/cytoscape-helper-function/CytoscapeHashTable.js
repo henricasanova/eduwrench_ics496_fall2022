@@ -14,12 +14,11 @@ export default class CytoscapeHashTable {
     if (!this.values.hasOwnProperty(hash)) {
       this.values[key] = {}
     }
-    // if (!this.values[hash].hasOwnProperty(key)) {
-    //   this.length++
-    // }
+
     if (value.children.length === 0) {
       this.bottomValue.push(value)
     }
+
     this.values[key] = value;
     // console.log(this.values)
   }
@@ -27,15 +26,19 @@ export default class CytoscapeHashTable {
   search(key) {
     // const hash = this.calculateHash(key)
     if (this.values.hasOwnProperty(key)) {
+
       return this.values[key]
     } else {
       return null
     }
   }
 
+  jsonFileWithNoChildren(key, value) {
+    this.values[key].children.push(value)
+  }
+
   updateTopLevel(key, count) {
     this.values[key].topLevel = count
-    console.log('update', this.values[key].name, this.values[key].topLevel)
     return this.values[key].topLevel
   }
 
@@ -57,6 +60,7 @@ export default class CytoscapeHashTable {
   }
 
   getBottomNode() {
+    // console.log(this.bottomValue)
     return this.bottomValue
   }
 

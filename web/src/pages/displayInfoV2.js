@@ -1,10 +1,12 @@
-import React from "react"
+import React, { useRef } from "react"
 import Layout from "../components/layout"
 import PageHeader from "../components/page_header"
 import { Container, Segment, Table } from "semantic-ui-react"
 import { useState } from "react"
 import JsonCytoscape from "../components/display_cytoscape"
 import DisplayCytoscape from '../components/display_cytoscape';
+import LineSweep from '../components/cytoscape-helper-function/LineSweep';
+
 
 const bottomUpLevel = (nodesObj, nodeName, partition) => {
   const node = nodesObj[nodeName]
@@ -62,8 +64,11 @@ const DisplayInfoV2 = () => {
   // isTrue
   const [isTrue, setIsTrue] = useState(false)
 
+  const line = useRef(null)
+
   React.useEffect(() => {
     if (file) {
+      line.current = new LineSweep()
       let jsonFile = Object.values(file)
       // console.log(jsonFile)
       jsonFile = jsonFile.filter(task => {
@@ -88,6 +93,9 @@ const DisplayInfoV2 = () => {
 
       // till here
       setResult([...result])
+
+      const total = line.current.getTotalIntersection(result)
+      console.log(total)
     }
 
     // setTemp(result)
@@ -110,6 +118,7 @@ const DisplayInfoV2 = () => {
         setResult([]) // re-set the result to empty array
         setFile(Object.fromEntries(fileEntries))
         setTotalNodes(fileEntries.length)
+
       }
     }
   }
