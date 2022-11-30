@@ -3,6 +3,7 @@ export default class CytoscapeHashTable {
     this.values = {}
     this.bottomValue = []
     this.valueArray = []
+    this.sortedArray = []
   }
 
   calculateHash(key) {
@@ -38,18 +39,18 @@ export default class CytoscapeHashTable {
   }
 
   updateTopLevel(key, count) {
+    console.log(key, count)
     this.values[key].topLevel = count
     return this.values[key].topLevel
   }
 
   getTopLevel() {
-    const objToArray = Object.values(this.values)
-    const sortedArray = this.sortJson(objToArray, 0, objToArray.length - 1)
-    const resultLength = sortedArray[sortedArray.length - 1].topLevel
-    this.divideByTopLevel(sortedArray, resultLength)
+    this.sortedArray = Object.values(this.values)
+    this.sortJson(this.sortedArray, 0, this.sortedArray.length - 1)
+    this.valueArrayLength =  this.sortedArray[this.sortedArray.length - 1].topLevel
+    this.divideByTopLevel(this.sortedArray, this.valueArrayLength)
     this.compute(this.valueArray[0])
-    this.valueArray.map(arr => this.computeBasedOnParents(arr, sortedArray))
-    this.valueArrayLength = this.valueArray.length
+    this.valueArray.map(arr => this.computeBasedOnParents(arr))
     return this.valueArray
   }
 
@@ -72,11 +73,7 @@ export default class CytoscapeHashTable {
     }
   }
 
-  computeBasedOnParents(data, list) {
-    const getParentsXCorr = (nodeName) => {
-      const { x } = list.filter(l => l.name === nodeName)[0]
-      return x
-    }
+  computeBasedOnParents(data) {
     let length = data.length
     for (let i = 0; i <= length - 1; i++) {
       if (data[i].x) {
@@ -84,14 +81,14 @@ export default class CytoscapeHashTable {
       }
       let newCorr = 0
       const { parents } = data[i]
-      for (let element of parents) {
-        newCorr += getParentsXCorr(element)
+      for (let key of parents) {
+        newCorr += this.values[key].x
+        console.log(data[i].name, newCorr, this.values[key].name, this.values[key].x)
       }
       data[i].x = newCorr / parents.length
     }
-    data.sort(function (a, b) {
-      return a.x < b.x
-    })
+    data.sort((a, b) => a.x - b.x)
+    console.log(data)
     this.compute(data)
   }
 

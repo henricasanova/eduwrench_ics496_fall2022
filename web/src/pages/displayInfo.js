@@ -36,7 +36,9 @@ const DisplayInfo = () => {
     } else {
       for (let nodeElement of parents) {
         if (cyTable.current.search(nodeElement).children.filter(child => child === name).length === 0) cyTable.current.jsonFileWithNoChildren(nodeElement, name)
-        count = cyTable.current.updateTopLevel(name, 1 + bottomUp(cyTable.current.search(nodeElement)))
+        count =  1 + bottomUp(cyTable.current.search(nodeElement))
+        console.log(cyTable.current.values[name].name, 'testing:', cyTable.current.values[name].topLevel, count, nodeElement)
+        cyTable.current.values[name].topLevel = count
       }
     }
     return count

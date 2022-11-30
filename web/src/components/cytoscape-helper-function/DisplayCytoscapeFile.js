@@ -17,10 +17,10 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, inter
 
         const element = nodes.reduce((element, node) => {
 
-          const { id, name: label, avgCPU, runtime, bytesRead, memory, x, y } = node
+          const { id, name: label, avgCPU, runtime, bytesRead, memory, x, y, topLevel } = node
 
           element.nodes.push({
-            data: { id, label, avgCPU, runtime, bytesRead, memory, x, y },
+            data: { id, label, avgCPU, runtime, bytesRead, memory, x, y, topLevel },
             position: { x, y },
           })
 
@@ -63,7 +63,6 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, inter
 
   useEffect(() => {
     if (test) {
-      console.log(test)
       const fileById = Object.fromEntries(Object.entries(file).map(([key, value]) => [value.id, value]))
 
       const elements = levels.reduce((elements, nodes) => {
@@ -139,7 +138,9 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, inter
                     "<br />Bytes Read: " + event.target[0]._private.data.bytesRead +
                     "<br />Memory: " + event.target[0]._private.data.memory +
                     "<br />X: " + event.target[0]._private.data.x +
-                    "<br />Y: " + event.target[0]._private.data.y
+                    "<br />Y: " + event.target[0]._private.data.y +
+                    "<br />Name: " + event.target[0]._private.data.label +
+                    "<br />TopLevel: " + event.target[0]._private.data.topLevel
 
                   document.body.appendChild(content);
                   return content;
