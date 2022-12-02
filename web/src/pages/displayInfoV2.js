@@ -7,6 +7,7 @@ import JsonCytoscape from "../components/display_cytoscape"
 import DisplayCytoscape from '../components/display_cytoscape';
 import LineSweep from '../components/cytoscape-helper-function/LineSweep';
 
+const cySet = new Set()
 
 const bottomUpLevel = (nodesObj, nodeName, partition) => {
   const node = nodesObj[nodeName]
@@ -19,7 +20,10 @@ const bottomUpLevel = (nodesObj, nodeName, partition) => {
     partition[0].push(node)
     return 0
   }
-
+  if (cySet.has(nodeName)) {
+    return 0
+  }
+  cySet.add(nodeName)
   const level = 1 + node.parents.reduce((max, parentName) => {
     if (!nodesObj[parentName].children) nodesObj[parentName].children = []
     if (nodesObj[parentName].children.filter(child => child === nodeName).length === 0) nodesObj[parentName].children.push(nodeName)

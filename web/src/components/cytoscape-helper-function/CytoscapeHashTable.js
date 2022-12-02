@@ -3,7 +3,8 @@ export default class CytoscapeHashTable {
     this.values = {}
     this.bottomValue = []
     this.valueArray = []
-    this.sortedArray = []
+    this.sortArray = []
+    this.dictValues = {}
   }
 
   calculateHash(key) {
@@ -11,16 +12,12 @@ export default class CytoscapeHashTable {
   }
 
   add(key, value) {
-    const hash = this.calculateHash(key)
-    if (!this.values.hasOwnProperty(hash)) {
+    // const hash = this.calculateHash(key)
+    if (!this.values.hasOwnProperty(key)) {
       this.values[key] = {}
     }
 
-    if (value.children.length === 0) {
-      this.bottomValue.push(value)
-    }
-
-    this.values[key] = value;
+    this.values[key] = value
     // console.log(this.values)
   }
 
@@ -34,21 +31,31 @@ export default class CytoscapeHashTable {
     }
   }
 
-  jsonFileWithNoChildren(key, value) {
-    this.values[key].children.push(value)
+  jsonFileWithNoChildren(arr) {
+    let i = arr.length - 1
+    while (i >= 0) {
+      const child = arr[i].name
+      let tempArray = arr[i].parents
+      for (let j = 0; j <= tempArray.length - 1; j++) {
+        this.values[tempArray[j]].children.push(child)
+      }
+      i--
+    }
   }
 
-  updateTopLevel(key, count) {
-    console.log(key, count)
-    this.values[key].topLevel = count
-    return this.values[key].topLevel
+  checkJsonFormatAndUpdate() {
+    this.sortArray = Object.values(this.values)
+    if(this.sortArray[0].children.length <= 0) {
+      this.jsonFileWithNoChildren(this.sortArray)
+    }
+    console.log(this.sortArray)
+    this.bottomValue = this.sortArray.filter(sArr => sArr.children.length <= 0)
   }
 
   getTopLevel() {
-    this.sortedArray = Object.values(this.values)
-    this.sortJson(this.sortedArray, 0, this.sortedArray.length - 1)
-    this.valueArrayLength =  this.sortedArray[this.sortedArray.length - 1].topLevel
-    this.divideByTopLevel(this.sortedArray, this.valueArrayLength)
+    this.sortJson(this.sortArray, 0, this.sortArray.length - 1)
+    this.valueArrayLength =  this.sortArray[this.sortArray.length - 1].topLevel
+    this.divideByTopLevel(this.sortArray, this.valueArrayLength)
     this.compute(this.valueArray[0])
     this.valueArray.map(arr => this.computeBasedOnParents(arr))
     return this.valueArray
@@ -83,12 +90,12 @@ export default class CytoscapeHashTable {
       const { parents } = data[i]
       for (let key of parents) {
         newCorr += this.values[key].x
-        console.log(data[i].name, newCorr, this.values[key].name, this.values[key].x)
+        // console.log(data[i].name, newCorr, this.values[key].name, this.values[key].x)
       }
       data[i].x = newCorr / parents.length
     }
     data.sort((a, b) => a.x - b.x)
-    console.log(data)
+    // console.log(data)
     this.compute(data)
   }
 

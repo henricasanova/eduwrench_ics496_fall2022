@@ -25,6 +25,13 @@ const DisplayInfo = () => {
   const cyIntersection = useRef(null)
   const cySet = useRef(null)
 
+  function max(a, b) {
+    if (a < b) {
+      return a
+    }
+    return b
+  }
+
   function bottomUp(objName) {
     let { name, parents, topLevel } = objName
     let count
@@ -34,15 +41,42 @@ const DisplayInfo = () => {
     if (parents.length <= 0) {
       return topLevel
     } else {
-      for (let nodeElement of parents) {
-        if (cyTable.current.search(nodeElement).children.filter(child => child === name).length === 0) cyTable.current.jsonFileWithNoChildren(nodeElement, name)
-        count =  1 + bottomUp(cyTable.current.search(nodeElement))
-        console.log(cyTable.current.values[name].name, 'testing:', cyTable.current.values[name].topLevel, count, nodeElement)
-        cyTable.current.values[name].topLevel = count
+      if (cySet.current.has(name)) {
+        return 0
       }
+      cySet.current.add(name)
+      const level = 1 + parents.reduce((max, parentName) => {
+        const level = bottomUp(cyTable.current.search(parentName))
+        if (max < level) max = level
+        return max
+      }, 0)
+      count = topLevel < level ? level : topLevel
+      cyTable.current.values[name].topLevel = count
+
     }
     return count
   }
+
+  // function bottomUp(objName) {
+  //   let { name, parents, topLevel } = objName
+  //   let count
+  //   if (topLevel > 0) {
+  //     return topLevel
+  //   }
+  //   if (parents.length <= 0) {
+  //     return topLevel
+  //   } else {
+  //     if (cySet.current.has(name)) {
+  //       return 0
+  //     }
+  //     for (let nodeElement of parents) {
+  //       cySet.current.add(name)
+  //       count =  1 + bottomUp(cyTable.current.search(nodeElement))
+  //       cyTable.current.values[name].topLevel = count
+  //     }
+  //   }
+  //   return count
+  // }
 
   async function getIntersection() {
     cyIntersection.current = new LineSweep()
@@ -67,9 +101,10 @@ const DisplayInfo = () => {
     if (event.target.files[0]) {
       await handleParseData(event)
       await setTimeout(() => {
+        console.log(cyTable.current.bottomValue)
         cyTable.current.getBottomNode().map(arrObj => bottomUp(arrObj))
         getFile()
-      }, 1500)
+      }, 3000)
     }
   }
 
@@ -79,10 +114,11 @@ const DisplayInfo = () => {
     const reader = new FileReader()
     reader.readAsText(event.target.files[0])
     reader.onload = event => {
-      JSON.parse(event.target.result).workflow.tasks.forEach(task => {
+      JSON.parse(event.target.result).workflow.tasks.forEach((task) => {
         const { name, type, runtime, parents, children, files, cores, avgCPU, bytesRead, bytesWritten, memory, machine, id, category, command } = task
           cyTable.current.add(name, { name, type, runtime, parents, children: children !== undefined ? children : [], files, cores, avgCPU, bytesRead, bytesWritten, memory, machine, id, category, command, topLevel: 0 })
       })
+      cyTable.current.checkJsonFormatAndUpdate()
     }
   }
 
