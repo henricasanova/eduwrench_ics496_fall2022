@@ -116,7 +116,7 @@ const DisplayInfo = () => {
     reader.onload = event => {
       JSON.parse(event.target.result).workflow.tasks.forEach((task) => {
         const { name, type, runtime, parents, children, files, cores, avgCPU, bytesRead, bytesWritten, memory, machine, id, category, command } = task
-          cyTable.current.add(name, { name, type, runtime, parents, children: children !== undefined ? children : [], files, cores, avgCPU, bytesRead, bytesWritten, memory, machine, id, category, command, topLevel: 0 })
+          cyTable.current.add(name, { name, type, runtime, parents, children: children !== undefined ? children : [], files, cores, avgCPU, bytesRead, bytesWritten, memory, machine, id, category, command, topLevel: 0, color: ''})
       })
       cyTable.current.checkJsonFormatAndUpdate()
     }

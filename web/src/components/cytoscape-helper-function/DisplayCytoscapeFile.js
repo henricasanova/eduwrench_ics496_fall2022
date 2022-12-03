@@ -17,10 +17,10 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, inter
 
         const element = nodes.reduce((element, node) => {
 
-          const { id, name: label, avgCPU, runtime, bytesRead, memory, x, y, topLevel } = node
+          const { id, name: label, avgCPU, runtime, bytesRead, memory, x, y, topLevel, color } = node
 
           element.nodes.push({
-            data: { id, label, avgCPU, runtime, bytesRead, memory, x, y, topLevel },
+            data: { id, label, avgCPU, runtime, bytesRead, memory, x, y, topLevel, color },
             position: { x, y },
           })
 
@@ -69,10 +69,10 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, inter
 
         const element = nodes.reduce((element, node) => {
 
-          const { id, name: label, avgCPU, runtime, bytesRead, memory, x, y } = node
+          const { id, name: label, avgCPU, runtime, bytesRead, memory, x, y, color } = node
 
           element.nodes.push({
-            data: { id, label, avgCPU, runtime, bytesRead, memory, x, y },
+            data: { id, label, avgCPU, runtime, bytesRead, memory, x, y, color },
             position: { x, y },
           })
 
@@ -160,7 +160,7 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, inter
           {
             selector: "node",
             style: {
-              "background-color": "transparent",
+              "background-color": "data(color)",
               color: "white",
               label: "data(label)",
               "text-wrap": "wrap",

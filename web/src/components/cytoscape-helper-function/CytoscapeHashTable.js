@@ -4,19 +4,32 @@ export default class CytoscapeHashTable {
     this.bottomValue = []
     this.valueArray = []
     this.sortArray = []
-    this.dictValues = {}
+    this.colorValues = {}
   }
 
   calculateHash(key) {
-    return key.charCodeAt(0)
+    let hash = 0
+    let chr
+
+    const re = /([a-z]+)|([A-Z]+)/
+    const reKey = key.match(re)
+    const keyStr = reKey[0]
+    for (let i = 0; i <= keyStr.length - 1; i++) {
+      chr = keyStr.charCodeAt(i)
+      hash = ((hash << 5) - hash) + chr
+      hash |= 0
+    }
+    return Math.abs(hash)
   }
 
   add(key, value) {
-    // const hash = this.calculateHash(key)
+    const hash = this.calculateHash(key)
     if (!this.values.hasOwnProperty(key)) {
       this.values[key] = {}
+      this.colorValues[key] = {}
     }
 
+    this.colorValues[key] = hash
     this.values[key] = value
     // console.log(this.values)
   }
@@ -58,12 +71,25 @@ export default class CytoscapeHashTable {
     this.divideByTopLevel(this.sortArray, this.valueArrayLength)
     this.compute(this.valueArray[0])
     this.valueArray.map(arr => this.computeBasedOnParents(arr))
+    console.log(this.colorValues)
     return this.valueArray
   }
 
+  getColor(node) {
+    const { name } = node
+    const hashValue = this.colorValues[name]
+    const red = hashValue % 255
+    const blue = hashValue % 245
+    const green = hashValue % 235
+    node.color = `rgb(${red}, ${green}, ${blue})`
+  }
+
   divideByTopLevel(arr, length) {
+    let temp
     for (let i = 0; i <= length; i++) {
-      this.valueArray.push(arr.filter(f => f.topLevel === i))
+      temp = arr.filter(fArr => fArr.topLevel === i)
+      temp.map(tArr => this.getColor(tArr))
+      this.valueArray.push(temp)
     }
   }
 
