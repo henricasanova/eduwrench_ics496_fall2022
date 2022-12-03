@@ -121,7 +121,7 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, inter
       <CytoscapeComponent
         elements={CytoscapeComponent.normalizeElements(elements)}
         maxZoom={10}
-        minZoom={0.2}
+        minZoom={0.05}
         //cy={cy => (cyRef.current = cy)}
         cy={(cy) => {
           cy.elements().unbind("mouseover");
@@ -163,14 +163,14 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, inter
             style: {
               "background-color": "data(color)",
               color: "white",
-              label: "data(label)",
+              // label: "data(label)",
               "text-wrap": "wrap",
               "text-halign": "center",
               "text-valign": "center",
-              width: "200",
+              // width: "200",
+              // height: "50"
+              width: "50",
               height: "50"
-              // width: "120",
-              // height: "120"
             },
           },
           {

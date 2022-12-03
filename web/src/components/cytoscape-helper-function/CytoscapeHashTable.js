@@ -58,7 +58,7 @@ export default class CytoscapeHashTable {
 
   checkJsonFormatAndUpdate() {
     this.sortArray = Object.values(this.values)
-    if(this.sortArray[0].children.length <= 0) {
+    if (this.sortArray[0].children.length <= 0) {
       this.jsonFileWithNoChildren(this.sortArray)
     }
     console.log(this.sortArray)
@@ -67,7 +67,7 @@ export default class CytoscapeHashTable {
 
   getTopLevel() {
     this.sortJson(this.sortArray, 0, this.sortArray.length - 1)
-    this.valueArrayLength =  this.sortArray[this.sortArray.length - 1].topLevel
+    this.valueArrayLength = this.sortArray[this.sortArray.length - 1].topLevel
     this.divideByTopLevel(this.sortArray, this.valueArrayLength)
     this.compute(this.valueArray[0])
     this.valueArray.map(arr => this.computeBasedOnParents(arr))
@@ -100,8 +100,12 @@ export default class CytoscapeHashTable {
 
   compute(data) {
     let length = data.length
+    let gap = Math.floor(this.sortArray.length/ this.valueArray.length / 5)
+    gap = gap < 1 ? 1 : gap
+    gap *= 3000
+
     for (let i = 0; i <= length - 1; i++) {
-      data[i].x = (i + 1) * (3000 / (length + 1))
+      data[i].x = (i + 1) * (gap / (length + 1))
       data[i].y = data[i].topLevel * 250
     }
   }
