@@ -17,10 +17,10 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, inter
 
         const element = nodes.reduce((element, node) => {
 
-          const { id, name: label, avgCPU, runtime, bytesRead, memory, x, y, topLevel, color } = node
+          const { id, name: label, avgCPU, runtime, bytesRead, bytesWritten, memory, x, y, topLevel, color } = node
 
           element.nodes.push({
-            data: { id, label, avgCPU, runtime, bytesRead, memory, x, y, topLevel, color },
+            data: { id, label, avgCPU, runtime, bytesRead, bytesWritten, memory, x, y, topLevel, color },
             position: { x, y },
           })
 
@@ -69,10 +69,10 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, inter
 
         const element = nodes.reduce((element, node) => {
 
-          const { id, name: label, avgCPU, runtime, bytesRead, memory, x, y, color } = node
+          const { id, name: label, avgCPU, runtime, bytesRead, bytesWritten, memory, x, y, color } = node
 
           element.nodes.push({
-            data: { id, label, avgCPU, runtime, bytesRead, memory, x, y, color },
+            data: { id, label, avgCPU, runtime, bytesRead, bytesWritten, memory, x, y, color },
             position: { x, y },
           })
 
@@ -133,14 +133,15 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, inter
 
                   content.classList.add("popper-div-json");
 
-                  content.innerHTML = "Avg CPU: " + event.target[0]._private.data.avgCPU +
+                  content.innerHTML = "Name: " + event.target[0]._private.data.label +
+                    "<br />TopLevel: " + event.target[0]._private.data.topLevel +
+                    "<br />Avg CPU: " + event.target[0]._private.data.avgCPU +
                     "<br />Runtime: " + event.target[0]._private.data.runtime +
                     "<br />Bytes Read: " + event.target[0]._private.data.bytesRead +
+                    "<br />Bytes Written: " + event.target[0]._private.data.bytesWritten +
                     "<br />Memory: " + event.target[0]._private.data.memory +
                     "<br />X: " + event.target[0]._private.data.x +
-                    "<br />Y: " + event.target[0]._private.data.y +
-                    "<br />Name: " + event.target[0]._private.data.label +
-                    "<br />TopLevel: " + event.target[0]._private.data.topLevel
+                    "<br />Y: " + event.target[0]._private.data.y
 
                   document.body.appendChild(content);
                   return content;
@@ -168,6 +169,8 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, inter
               "text-valign": "center",
               width: "200",
               height: "50"
+              // width: "120",
+              // height: "120"
             },
           },
           {
@@ -178,6 +181,7 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, inter
               "line-color": "#333",
               "target-arrow-color": "#333",
               "target-arrow-shape": "triangle",
+              opacity: 0.5
             },
           },
         ]}
