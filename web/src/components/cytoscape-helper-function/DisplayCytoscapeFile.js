@@ -9,6 +9,9 @@ cytoscape.use(popper);
 
 const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, intersection }) => {
   const [elements, setElements] = useState({ nodes: [], edges: [] })
+  const [maxHeight, setMaxHeight] = useState(0)
+  const [maxWidth, setMaxWidth] = useState(0)
+
   useEffect(() => {
     if (isTrue) {
       const fileById = Object.fromEntries(Object.entries(file).map(([key, value]) => [value.id, value]))
@@ -60,6 +63,7 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, inter
       console.log(levels, file, intersection)
     }
   }, [isTrue])
+  console.log(elements)
 
   useEffect(() => {
     if (test) {
@@ -117,7 +121,6 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, inter
   const cyRef = useRef()
   return (
     <>
-      <h1>Json Cytoscape Component</h1>
       <CytoscapeComponent
         elements={CytoscapeComponent.normalizeElements(elements)}
         maxZoom={10}
@@ -139,9 +142,7 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, inter
                     "<br />Runtime: " + event.target[0]._private.data.runtime +
                     "<br />Bytes Read: " + event.target[0]._private.data.bytesRead +
                     "<br />Bytes Written: " + event.target[0]._private.data.bytesWritten +
-                    "<br />Memory: " + event.target[0]._private.data.memory +
-                    "<br />X: " + event.target[0]._private.data.x +
-                    "<br />Y: " + event.target[0]._private.data.y
+                    "<br />Memory: " + event.target[0]._private.data.memory
 
                   document.body.appendChild(content);
                   return content;
@@ -185,7 +186,7 @@ const DisplayCytoscapeFile = ({ width, height, levels, file, test, isTrue, inter
             },
           },
         ]}
-        style={{ "minHeight": `${width}px`, "maxHeight": `${height}px` }}
+        style={{ "width": `${6000}px`, "height": `${height}px` }}
       />
     </>
   )

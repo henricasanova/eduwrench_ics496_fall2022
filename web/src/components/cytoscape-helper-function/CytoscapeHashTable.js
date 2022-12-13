@@ -29,6 +29,10 @@ export default class CytoscapeHashTable {
       this.colorValues[key] = {}
     }
 
+    if (value.children.length <= 0) {
+      this.bottomValue.push(value)
+    }
+
     this.colorValues[key] = hash
     this.values[key] = value
     // console.log(this.values)
@@ -54,6 +58,7 @@ export default class CytoscapeHashTable {
       }
       i--
     }
+    this.bottomValue = Object.values(this.values).filter(arr => arr.children.length <= 0)
   }
 
   checkJsonFormatAndUpdate() {

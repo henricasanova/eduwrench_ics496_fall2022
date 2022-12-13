@@ -189,18 +189,21 @@ const DisplayInfo = () => {
 
   return (<Layout>
     <PageHeader title="Display"/>
-    <Container style={{ marginBottom: "20px" }}>
+    <Container textAlign={'center'}>
       <Segment textAlign={'center'}>
         <Form>
           <Form.Input type={'file'} label={'Json File Upload'} onChange={handleOnchange}/>
         </Form>
         <Form onSubmit={(event) => handleInputChange(event.target[0].value)}>
-          <Form.Input type={'number'} label={'Search'}/>
-          <Button type={'submit'}/>
+          <Form.Input type={'number'} label={'Randomize the node position'}/>
+          <Button label={'randomize'} type={'submit'}/>
         </Form>
       </Segment>
+      {isTrue ? <h1>Total Intersection: {totalIntersection}</h1> : null}
     </Container>
-    {isTrue && <DisplayCytoscapeFile width={3000} height={result.length * 250} file={file} levels={result} test={test} isTrue={isTrue} intersection={totalIntersection}/>}
+    <Container style={{ marginBottom: "20px" }} fluid>
+      {isTrue && <DisplayCytoscapeFile width={3000} height={result.length * 250} file={cyTable.current.values} levels={result} test={test} isTrue={isTrue} intersection={totalIntersection}/>}
+    </Container>
   </Layout>)
 }
 
